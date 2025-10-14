@@ -155,7 +155,7 @@ router.get("/me", async(req,res)=>{
 
         if(!me)return res.status(404).json({message:"사용자 없음"})
 
-        return res.status(200).json(user.toSafeJSON())
+        return res.status(200).json(me.toSafeJSON())
 
     } catch (error) {
         res.status(401).json({message:"조회 실패",error:error.message})
