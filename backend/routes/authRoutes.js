@@ -151,7 +151,7 @@ router.use(auth)
 router.get("/me", async(req,res)=>{
     try {
         
-        const me=await User.findById(req.user._id)
+        const me=await User.findById(req.user.id)
 
         if(!me)return res.status(404).json({message:"사용자 없음"})
 
