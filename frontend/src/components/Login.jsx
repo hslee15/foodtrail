@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/Login.scss"
 import { loginApi } from "../api/auth";
 
-export default function Login({ onSuccess }) {
+function Login({ onSuccess }) {
     const [email, setEmail] = useState("");
     const [pw, setPw] = useState("");
     const [err, setErr] = useState("");
+    const navigate = useNavigate();
 
     const submit = async (e) => {
     e.preventDefault();
@@ -40,7 +42,9 @@ export default function Login({ onSuccess }) {
             </div>
             <div className="button">
                 <button type="submit">로그인</button>
+                <button type="button" onClick={() => navigate("/register")}>회원가입</button>
             </div>
+            
             {err && (
                 <div className="auth-error">
                     <p className="error">{err}</p>
@@ -49,3 +53,5 @@ export default function Login({ onSuccess }) {
         </form>
     );
 }
+
+export default Login;
