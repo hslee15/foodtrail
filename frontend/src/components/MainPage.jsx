@@ -1,7 +1,7 @@
 import React from 'react';
 import './styles/MainPage.scss'
 
-export default function MainPage({ user, onLogout }) {
+function MainPage({ user, onLogout }) {
     return (
         <div className="main-container">
         <header className="main-header">
@@ -21,3 +21,4 @@ export default function MainPage({ user, onLogout }) {
         </div>
     );
 }
+export default MainPage;
