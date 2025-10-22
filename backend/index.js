@@ -26,7 +26,7 @@ app.get("/", (_req, res) => res.send("PhotoMemo API OK"));
 
 // authRoutes
 const authRoutes=require("./routes/authRoutes")
-const uploadRoutes=require('./routes/upload');
+const uploadRoutes=require("./routes/upload");
 
 app.use("/api/auth",authRoutes)
 app.use("/api/upload",uploadRoutes)
