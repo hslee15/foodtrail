@@ -1,47 +1,143 @@
+/* $변수 선언을 모두 삭제 */
+
 .main-container {
-    height: 50vw;
-    width: 60vw;
-    padding: 4rem;
-    text-align: left;
-    background-color: blanchedalmond;
+    background-color: var(--color-bg); 
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     }
 
     .main-header {
+    background-color: var(--color-main);
+    color: var(--color-header-text);
+    padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #555;
-    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px var(--color-shadow-light);
 
     h1 {
-        font-size: 2.5em;
         margin: 0;
-    }
+        font-size: 1.8rem;
     }
 
     .user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-
-    span {
-        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
     }
 
     .logout-button {
-    background-color: #555;
-    color: blanchedalmond;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    border: none;
+    
     &:hover {
-        background-color: #777;
-        border-color: #888;
-        color: white;
+        background-color: var(--color-accent-hover); 
     }
     }
 
+    /* === ▼▼▼ 스타일 적용/수정된 부분 ▼▼▼ === */
+
     .content-area {
+    padding: 2rem;
+    flex-grow: 1;
+
+    /* 1. 검색창 스타일 */
+    .search-container {
+        margin-bottom: 2rem;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 0.8em 1em;
+        font-size: 1rem;
+        border: 2px solid var(--color-border);
+        border-radius: 10px;
+        box-sizing: border-box; /* 패딩 포함 너비 100% */
+        color: var(--color-text);
+        background-color: var(--color-white);
+        transition: all 0.2s;
+
+        &:focus {
+        outline: none;
+        border-color: var(--color-main);
+        box-shadow: 0 0 0 3px var(--color-main-shadow);
+        }
+    }
+
+    /* 2. 게시물 그리드 제목 */
     h2 {
-        font-size: 2em;
+        color: var(--color-text);
+        border-bottom: 3px solid var(--color-main);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+        margin-bottom: 1.5rem; /* 그리드와 간격 추가 */
+    }
+
+    /* 3. 게시물 그리드 스타일 */
+    .posts-grid {
+        display: grid;
+        /* 화면 크기에 따라 280px 크기로 카드를 자동으로 정렬 */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .post-card {
+        background-color: var(--color-white);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px var(--color-shadow-light);
+        overflow: hidden; /* 이미지 모서리 둥글게 */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        cursor: pointer;
+
+        &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px var(--color-shadow-light);
+        }
+
+        .post-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover; /* 이미지가 비율에 맞게 채워짐 */
+        background-color: #f0f0f0; /* 이미지 로딩 전 배경색 */
+        }
+
+        .post-content {
+        padding: 1.2rem;
+        }
+
+        .post-title {
+        font-size: 1.25rem;
+        color: var(--color-main);
+        margin: 0 0 0.5rem 0;
+        }
+
+        .post-description {
+        font-size: 0.95rem;
+        color: var(--color-text);
+        margin: 0;
+        /* 긴 텍스트 자르기 (선택 사항) */
+        line-height: 1.4;
+        height: 2.8em; /* (0.95rem * 1.4 * 2줄) */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* 2줄까지만 표시 */
+        -webkit-box-orient: vertical;
+        }
+    }
+    
+    .no-results {
+        font-size: 1.1rem;
+        color: var(--color-text);
+    }
+
+    /* 기존 p 태그 (환영합니다...) 스타일 */
+    p {
+        font-size: 1.1rem;
+        line-height: 1.6;
     }
 }

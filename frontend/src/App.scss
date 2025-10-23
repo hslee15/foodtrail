@@ -1,8 +1,16 @@
+/* $변수 선언을 모두 삭제 */
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+}
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
 }
 
 .logo {
@@ -12,10 +20,12 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  /* $color-main 대신 var() 사용 */
+  filter: drop-shadow(0 0 2em var(--color-main)aa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  /* $color-accent 대신 var() 사용 */
+  filter: drop-shadow(0 0 2em var(--color-accent)aa);
 }
 
 @keyframes logo-spin {
@@ -25,18 +35,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

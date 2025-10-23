@@ -1,11 +1,31 @@
+/* --- FoodTrail Green Theme (CSS Custom Properties) --- */
+:root {
+  --color-bg: #F9FBF6;         /* 연녹색 배경 */
+  --color-text: #3E4C3A;       /* 짙은 올리브 텍스트 */
+  --color-main: #8dbb3c;       /* 내추럴 그린 메인 */
+  --color-accent: #4da24c;     /* 포레스트 그린 포인트 */
+  --color-accent-text: #FFFFFF; /* 강조색 위 텍스트 */
+  --color-header-text: #FFFFFF; /* 헤더 텍스트 */
+  --color-white: #FFFFFF;      /* 순수 흰색 (폼 배경 등) */
+
+  /* 파생 변수 (hover, focus 등) */
+  --color-main-hover: #7dab35;   /* 메인 호버 */
+  --color-accent-hover: #459244; /* 강조 호버 */
+  --color-main-shadow: rgba(141, 187, 60, 0.3); /* 포커스 그림자 */
+  --color-border: #eef2e7;       /* 연한 테두리 */
+  --color-shadow-light: rgba(62, 76, 58, 0.1); /* 연한 그림자 */
+  --color-error: #D9534F;      /* 에러 텍스트 */
+}
+/* -------------------------------------------------- */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,18 +35,15 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-accent);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--color-main);
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
 }
 
@@ -42,27 +59,25 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--color-white);
+  color: var(--color-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--color-main-hover);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* 어두운 모드 제거 */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
+    /* 이미 :root에서 모두 정의함 */
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--color-white);
   }
 }
