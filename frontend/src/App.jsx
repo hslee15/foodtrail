@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.scss';
 import Login from './components/Login';
 import Register from './components/Register';
-import MainPage from './components/MainPage';
+import Dashboard from './pages/Dashboard';
+import Landing from './pages/Landing';
 import api from './api/client'; 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -47,17 +48,17 @@ function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="/" element={<MainPage user={user} onLogout={handleLogout} />} />
+              <Route path="/" element={<Dashboard user={user} onLogout={handleLogout} />} />
               <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           ) : (
             <>
-              <Route path="/" element={<Login onSuccess={handleLoginSuccess} />} />
+              <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login onSuccess={handleLoginSuccess} />} />
               <Route path="/register" element={<Register />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}
         </Routes>
