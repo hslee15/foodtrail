@@ -17,6 +17,10 @@ function MainPage({ user, onLogout }) {
         <main className="content-area">
             <h2>환영합니다!</h2>
             <p>FoodTrail 서비스를 이용할 수 있습니다.</p>
+
+            
+
+
         </main>
         </div>
     );

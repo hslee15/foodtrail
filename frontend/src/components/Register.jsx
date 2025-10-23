@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles/Login.scss";
+import "./styles/Register.scss";
 import { registerApi } from "../api/auth";
 
 function Register() {
