@@ -3,6 +3,7 @@ import './App.scss';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
+import PostDetail from './pages/PostDetail';
 import Landing from './pages/Landing';
 import api from './api/client'; 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -49,6 +50,7 @@ function App() {
           {user ? (
             <>
               <Route path="/" element={<Dashboard user={user} onLogout={handleLogout} />} />
+              <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
