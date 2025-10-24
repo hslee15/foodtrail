@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // 1. useState, useEffect 임포트
+import React, { useState, useEffect } from 'react';
 import './style/Dashboard.scss';
 
 // 2. 실제 데이터 대신 사용할 임시 목업(Mock) 데이터
@@ -7,36 +7,34 @@ const mockPosts = [
         id: 1, 
         title: "우리 동네 파스타 맛집", 
         description: "최근에 발견한 최고의 파스타 가게! 면 익힘이 완벽해요.", 
-        imageUrl: "https://via.placeholder.com/300x200?text=Pasta" 
+        imageUrl: "/images/p.jpg" 
     },
     { 
         id: 2, 
         title: "따뜻한 국밥 한 그릇", 
         description: "비 오는 날엔 역시 뜨끈한 국밥이죠. 깍두기도 맛있습니다.", 
-        imageUrl: "https://via.placeholder.com/300x200?text=Gukbap" 
+        imageUrl: "/images/g.jpg" 
     },
     { 
         id: 3, 
         title: "인생 녹차 케이크", 
         description: "디저트 배는 따로 있죠. 쌉싸름한 녹차와 부드러운 크림의 조화.", 
-        imageUrl: "https://via.placeholder.com/300x200?text=Green+Tea+Cake" 
+        imageUrl: "/images/c.jpg" 
     },
     { 
         id: 4, 
         title: "신선한 샐러드", 
         description: "건강한 한 끼 식사. 재료가 정말 신선해서 기분이 좋았습니다.", 
-        imageUrl: "https://via.placeholder.com/300x200?text=Salad" 
+        imageUrl: "/images/s.jpg" 
     },
     ];
 
 
     function Dashboard({ user, onLogout }) {
-    // 3. 검색어, 게시물 목록을 위한 State 추가
-    const [posts, setPosts] = useState([]); // 원본 데이터
-    const [filteredPosts, setFilteredPosts] = useState([]); // 검색 결과 데이터
-    const [searchTerm, setSearchTerm] = useState(''); // 검색어
+    const [posts, setPosts] = useState([]); 
+    const [filteredPosts, setFilteredPosts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    // 4. 컴포넌트 마운트 시 임시 데이터 로드
     useEffect(() => {
         // (나중에 이 부분을 api.get('/api/posts') 같은 실제 API 호출로 대체하세요)
         setPosts(mockPosts);
