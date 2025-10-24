@@ -27,9 +27,11 @@ app.get("/", (_req, res) => res.send("PhotoMemo API OK"));
 // authRoutes
 const authRoutes=require("./routes/authRoutes")
 const uploadRoutes=require("./routes/upload");
+const postRoutes=require("./routes/posts")
 
 app.use("/api/auth",authRoutes)
 app.use("/api/upload",uploadRoutes)
+app.use("/api/posts", postRoutes)
 
 app.use((req,res)=>{
   res.status(404).json({message:'요청하신 경로를 찾을 수 없습니다.'})
