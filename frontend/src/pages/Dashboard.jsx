@@ -5,25 +5,25 @@ import './style/Dashboard.scss';
 // 2. 실제 데이터 대신 사용할 임시 목업(Mock) 데이터
 const mockPosts = [
     { 
-        id: 1, 
+        _id: 1, 
         title: "우리 동네 파스타 맛집", 
         description: "최근에 발견한 최고의 파스타 가게! 면 익힘이 완벽해요.", 
         imageUrl: "/images/p.jpg" 
     },
     { 
-        id: 2, 
+        _id: 2, 
         title: "따뜻한 국밥 한 그릇", 
         description: "비 오는 날엔 역시 뜨끈한 국밥이죠. 깍두기도 맛있습니다.", 
         imageUrl: "/images/g.jpg" 
     },
     { 
-        id: 3, 
+        _id: 3, 
         title: "인생 녹차 케이크", 
         description: "디저트 배는 따로 있죠. 쌉싸름한 녹차와 부드러운 크림의 조화.", 
         imageUrl: "/images/c.jpg" 
     },
     { 
-        id: 4, 
+        _id: 4, 
         title: "신선한 샐러드", 
         description: "건강한 한 끼 식사. 재료가 정말 신선해서 기분이 좋았습니다.", 
         imageUrl: "/images/s.jpg" 
@@ -90,7 +90,7 @@ const mockPosts = [
             <div className="posts-grid">
             {filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
-                <Link to={'/post/${post._id'} key={post._id} className="post-card">
+                <Link to={`/post/${post._id}`} key={post._id} className="post-card">
                     <img src={post.imageUrl} alt={post.title} className="post-image" />
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
