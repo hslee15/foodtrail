@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Link} from 'react-router-dom';
 import './style/Dashboard.scss';
 
 // 2. 실제 데이터 대신 사용할 임시 목업(Mock) 데이터
@@ -31,34 +32,34 @@ const mockPosts = [
 
 
     function Dashboard({ user, onLogout }) {
-    const [posts, setPosts] = useState([]); 
-    const [filteredPosts, setFilteredPosts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+        const [posts, setPosts] = useState([]); 
+        const [filteredPosts, setFilteredPosts] = useState([]);
+        const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        // (나중에 이 부분을 api.get('/api/posts') 같은 실제 API 호출로 대체하세요)
-        setPosts(mockPosts);
-        setFilteredPosts(mockPosts); // 처음엔 모든 게시물 표시
-    }, []);
+        useEffect(() => {
+            // (나중에 이 부분을 api.get('/api/posts') 같은 실제 API 호출로 대체하세요)
+            setPosts(mockPosts);
+            setFilteredPosts(mockPosts); // 처음엔 모든 게시물 표시
+        }, []);
 
-    // 5. 검색어(searchTerm)가 변경될 때마다 필터링 실행
-    useEffect(() => {
-        if (!searchTerm) {
-        setFilteredPosts(posts); // 검색어가 없으면 전체 목록 표시
-        } else {
-        const lowerCaseSearch = searchTerm.toLowerCase();
-        const filtered = posts.filter(post => 
-            post.title.toLowerCase().includes(lowerCaseSearch) ||
-            post.description.toLowerCase().includes(lowerCaseSearch)
-        );
-        setFilteredPosts(filtered);
-        }
-    }, [searchTerm, posts]); // searchTerm 또는 posts가 변경될 때마다 실행
+        // 5. 검색어(searchTerm)가 변경될 때마다 필터링 실행
+        useEffect(() => {
+            if (!searchTerm) {
+            setFilteredPosts(posts); // 검색어가 없으면 전체 목록 표시
+            } else {
+            const lowerCaseSearch = searchTerm.toLowerCase();
+            const filtered = posts.filter(post => 
+                post.title.toLowerCase().includes(lowerCaseSearch) ||
+                post.description.toLowerCase().includes(lowerCaseSearch)
+            );
+            setFilteredPosts(filtered);
+            }
+        }, [searchTerm, posts]); // searchTerm 또는 posts가 변경될 때마다 실행
 
-    // 6. 검색창 입력 핸들러
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
+        // 6. 검색창 입력 핸들러
+        const handleSearchChange = (event) => {
+            setSearchTerm(event.target.value);
+        };
 
     return (
         <div className="main-container">
@@ -89,13 +90,13 @@ const mockPosts = [
             <div className="posts-grid">
             {filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
-                <div className="post-card" key={post.id}>
+                <Link to={'/post/${post._id'} key={post._id} className="post-card">
                     <img src={post.imageUrl} alt={post.title} className="post-image" />
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
                     <p className="post-description">{post.description}</p>
                     </div>
-                </div>
+                </Link>
                 ))
             ) : (
                 // 검색 결과가 없을 때
