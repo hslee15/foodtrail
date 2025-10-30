@@ -5,8 +5,10 @@ import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
 import PostDetail from './pages/PostDetail';
 import Landing from './pages/Landing';
-import api from './api/client'; 
+import PostCreate from './pages/PostCreate';
+import api from './api/client';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PostEdit from './pages/PostEdit';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,7 +52,9 @@ function App() {
           {user ? (
             <>
               <Route path="/" element={<Dashboard user={user} onLogout={handleLogout} />} />
-              <Route path="/post/:id" element={<PostDetail />} />
+              <Route path="/post/:id" element={<PostDetail user={user}/>} />
+              <Route path='/create' element={<PostCreate/>}/>
+              <Route path='/post/:id/edit' element={<PostEdit/>}/>
               <Route path="/login" element={<Navigate to="/" replace />} />
               <Route path="/register" element={<Navigate to="/" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />

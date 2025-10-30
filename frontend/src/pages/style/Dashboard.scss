@@ -70,7 +70,34 @@
         border-bottom: 3px solid var(--color-main);
         padding-bottom: 0.5rem;
         display: inline-block;
-        margin-bottom: 1.5rem; 
+        // margin-bottom: 1.5rem; // .posts-header 로 이동
+    }
+
+    /* [추가] 게시물 헤더 (제목 + 글쓰기 버튼) */
+    .posts-header {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 1.5rem; // h2에 있던 margin을 여기로 이동
+
+        h2 {
+            margin-bottom: 0; // div가 margin을 담당하므로
+        }
+
+        /* '새 글 작성하기' 버튼 스타일 */
+        .btn-create-post {
+            background-color: var(--color-accent); 
+            color: var(--color-accent-text); 
+            text-decoration: none; // Link 태그의 밑줄 제거
+            padding: 0.6em 1.2em;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: var(--color-accent-hover); 
+            }
+        }
     }
 
     /* 3. 게시물 그리드 스타일 */
@@ -100,7 +127,8 @@
 
         .post-image {
         width: 100%;
-        height: 50%;
+        // height: 50%; // -> 썸네일 비율을 위해 고정 높이로 변경
+        height: 180px; // 썸네일 높이 고정
         object-fit: cover;
         background-color: #f0f0f0;
         }
@@ -133,6 +161,10 @@
     .no-results {
         font-size: 1.1rem;
         color: var(--color-text);
+        // 그리드 중앙에 표시되도록
+        grid-column: 1 / -1; // 모든 컬럼을 차지
+        text-align: center;
+        margin-top: 2rem;
     }
 
     p {

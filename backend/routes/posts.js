@@ -1,12 +1,12 @@
 const express=require('express')
 const router=express.Router()
-const Post=require('../models/Posts') // 'Posts.js' (복수형) 사용
+const Post=require('../models/Posts')
 const jwt=require('jsonwebtoken')
 const {presignGet}=require('../src/s3')
 const mongoose=require('mongoose')
 
 const authenticateToken = (req, res, next) => {
-
+// ... (이 부분은 기존 코드와 동일) ...
     let token = null;
 
     const h = req.headers.authorization;
@@ -32,16 +32,9 @@ const authenticateToken = (req, res, next) => {
 
 }
 
-// 💡 400 에러 수정: ObjectId 검사 -> 숫자 검사
-// const ensureObjectId=(req, res, next)=>{
-//     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
-//         return res.status(400).json({message:'잘못된 id 형식입니다.'})
-//     }
-//     next()
-// }
-
 // 💡 400 에러 수정을 위한 새 미들웨어: 숫자인지 검사
 const ensureValidNumber = (req, res, next) => {
+// ... (이 부분은 기존 코드와 동일) ...
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
         // '1' 대신 'id' 파라미터가 유효하지 않다고 메시지 수정
@@ -54,12 +47,14 @@ const ensureValidNumber = (req, res, next) => {
 
 
 const pickDefined = (obj) => 
+// ... (이 부분은 기존 코드와 동일) ...
     Object.fromEntries(
         Object.entries(obj)
             .filter(([, v]) => v !== undefined)
     )
 
 router.post('/',authenticateToken,async(req,res, next)=>{ // next 추가
+// ... (이 부분은 기존 코드와 동일) ...
     try {
         let { title, content, fileUrl = [], imageUrl } = req.body // fileUrl let으로 변경
 
@@ -93,6 +88,7 @@ router.post('/',authenticateToken,async(req,res, next)=>{ // next 추가
 })
 
 router.get('/',async(req,res, next)=>{ // next 추가
+// ... (이 부분은 기존 코드와 동일, S3 변환 로직이 이미 있음) ...
     try {
         const list=await Post.find().sort({createdAt:-1}).lean()
 
@@ -106,6 +102,10 @@ router.get('/',async(req,res, next)=>{ // next 추가
                     arr.filter(v => v).map(async(v)=> (v?.startsWith("http")? v: await presignGet(v,3600)))
                 )
 
+                // 💡 imageUrl도 업데이트 해줍니다. (목록->상세 이동 시 캐시 때문)
+                if (urls.length > 0) {
+                    p.imageUrl = urls[0];
+                }
                 return {...p,fileUrl:urls}
             })
         )
@@ -118,6 +118,8 @@ router.get('/',async(req,res, next)=>{ // next 추가
 })
 
 router.get('/my',authenticateToken, async(req,res, next)=>{ // next 추가
+// ... (이 부분은 기존 코드와 동일) ...
+// (참고: 이 라우트도 S3 변환이 필요할 수 있지만, 현재 사용 중이지 않으므로 넘어갑니다.)
     try {
         
         const userId=req.user._id || req.user.id
@@ -132,26 +134,41 @@ router.get('/my',authenticateToken, async(req,res, next)=>{ // next 추가
     }
 })
 
-// 💡 400 에러 수정: ensureObjectId -> ensureValidNumber, findById -> findOne({ number: ... })
 router.get('/:id', ensureValidNumber, async(req, res, next)=>{
     try {
         
-        // const doc = await Post.findById(req.params.id).lean() // 몽고 _id로 찾음
-        const doc = await Post.findOne({ number: req.params.id }).lean() // 'number' 필드로 찾음
+        const doc = await Post.findOne({ number: req.params.id }).lean()
 
         if(!doc) return res.status(404).json({message:'존재하지 않는 게시글'})
         
-        // (S3 URL 변환 로직이 필요하면 여기에도 추가해야 합니다)
+        const keyForPresigning = doc.imageUrl || (doc.fileUrl && doc.fileUrl[0]);
+        let presignedDisplayUrl = null;
 
-        res.json(doc)
+        if (keyForPresigning) {
+            if (keyForPresigning.startsWith("http")) {
+                presignedDisplayUrl = keyForPresigning;
+            } else {
+                presignedDisplayUrl = await presignGet(keyForPresigning, 3600);
+            }
+        }
+
+        res.json({
+            ...doc,
+            
+            fileUrl: doc.fileUrl, 
+            imageUrl: doc.imageUrl,
+            
+            presignedImageUrl: presignedDisplayUrl 
+        });
 
     } catch (error) {
         console.error(`GET /api/posts/${req.params.id} 실패`, error);
-        next(error); // 공통 에러 핸들러로 전달
+        next(error);
     }
 })
 
-// 💡 400 에러 수정: ensureObjectId -> ensureValidNumber, findByIdAndUpdate -> findOneAndUpdate({ number: ... })
+
+
 router.put('/:id', authenticateToken, ensureValidNumber, async(req, res, next)=>{
     try {
         const {title, content, fileUrl, imageUrl}=req.body
@@ -165,7 +182,7 @@ router.put('/:id', authenticateToken, ensureValidNumber, async(req, res, next)=>
         })
 
         const updated = await Post.findOneAndUpdate(
-            { number: req.params.id }, // _id 대신 'number' 필드로 찾음
+            { number: req.params.id },
             {$set:updates},
             {new:true,runValidators:true}
         )
@@ -176,25 +193,22 @@ router.put('/:id', authenticateToken, ensureValidNumber, async(req, res, next)=>
 
     } catch (error) {
         console.error(`PUT /api/posts/${req.params.id} 실패`, error);
-        next(error); // 공통 에러 핸들러로 전달
+        next(error); 
     }
 })
 
-// 💡 400 에러 수정: ensureObjectId -> ensureValidNumber, findByIdAndDelete -> findOneAndDelete({ number: ... })
 router.delete('/:id', authenticateToken, ensureValidNumber, async(req, res, next)=>{
     try {
-        // const deleted=await Post.findByIdAndDelete(req.params.id)
-        const deleted=await Post.findOneAndDelete({ number: req.params.id }) // _id 대신 'number' 필드로 찾음
+        const deleted=await Post.findOneAndDelete({ number: req.params.id })
 
         if(!deleted) return res.status(404).json({message:'존재하지 않는 게시글'})
 
-        res.json({ok:true, id:deleted._id}) // 삭제된 몽고 _id 반환
+        res.json({ok:true, id:deleted._id})
 
     } catch (error) {
         console.error(`DELETE /api/posts/${req.params.id} 실패`, error);
-        next(error); // 공통 에러 핸들러로 전달
+        next(error);
     }
 })
 
 module.exports=router
-

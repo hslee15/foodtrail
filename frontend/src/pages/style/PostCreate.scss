@@ -1,0 +1,100 @@
+// frontend/src/pages/style/PostCreate.scss
+
+.post-create-container {
+  max-width: 768px;
+  margin: 40px auto;
+  padding: 2rem;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--color-shadow-light);
+
+  h1 {
+    color: var(--color-main);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 0.8em 1em;
+      font-size: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-sizing: border-box; // 너비 계산이 쉽도록
+      color: var(--color-text);
+      background-color: var(--color-bg);
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-main);
+        box-shadow: 0 0 0 3px var(--color-main-shadow);
+      }
+    }
+
+    textarea {
+      font-family: inherit; // 폰트 일치
+      resize: vertical; // 세로로만 크기 조절
+    }
+  }
+
+  .preview-container {
+    margin-bottom: 1.5rem;
+    img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+  }
+
+  .error-message {
+    color: var(--color-error);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.5rem;
+
+    button {
+      font-size: 1rem;
+      padding: 0.7em 1.4em;
+    }
+
+    .btn-cancel {
+      background-color: var(--color-white);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      
+      &:hover {
+        background-color: #f7f7f7;
+      }
+    }
+
+    .btn-submit {
+      background-color: var(--color-accent);
+      color: var(--color-accent-text);
+      
+      &:hover {
+        background-color: var(--color-accent-hover);
+      }
+    }
+  }
+}

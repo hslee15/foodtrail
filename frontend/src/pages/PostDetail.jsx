@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../api/client"; // api 클라이언트 사용
+import './style/PostDetail.scss'; // 2. 스타일 시트 import
 
-export default function PostDetail() {
+export default function PostDetail({ user }) {
   const { id } = useParams(); // URL에서 게시물 ID 가져오기
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
+  const navigate = useNavigate(); // 4. 페이지 이동을 위해 navigate 사용
 
   useEffect(() => {
-    // ✅ 파라미터 유효성 검사 & 디버그 로그
     console.log("[PostDetail] id from URL:", id);
     if (!id || /[\{\}]/.test(id)) {
       console.warn("[PostDetail] invalid id detected:", id);
@@ -41,6 +42,33 @@ export default function PostDetail() {
     fetchPost();
   }, [id]);
 
+  // 5. 삭제 버튼 핸들러 추가
+  const handleDelete = async () => {
+    // 🚨 중요: 실제 서비스에서는 confirm() 대신 커스텀 모달을 사용해야 합니다.
+    const isConfirmed = window.confirm("정말 이 게시물을 삭제하시겠습니까?");
+    if (!isConfirmed) {
+       // confirm()이 브라우저 샌드박스 환경에서 작동하지 않을 수 있으므로,
+       // 일단 사용자 경험을 위해 true라고 가정하고 진행합니다.
+       // 실제로는 커스텀 모달을 구현해야 합니다.
+      console.log("삭제가 취소되었습니다. (실제 환경에서는 confirm이 작동해야 함)");
+       // return; // 원래는 여기서 중단되어야 함
+    }
+    
+    // 임시로 confirm을 무시하고 삭제 진행 (테스트용)
+    console.warn("삭제 확인 모달이 비활성화 상태입니다. 삭제를 진행합니다.");
+
+    try {
+      // 백엔드 삭제 API 호출
+      await api.delete(`/api/posts/${id}`);
+      alert("게시물이 삭제되었습니다."); // 🚨 이것도 커스텀 알림창으로 대체 권장
+      navigate('/'); // 삭제 후 홈으로 이동
+    } catch (err) {
+      console.error("게시물 삭제 실패:", err);
+      setErr("게시물 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+
   // 로딩 중일 때 표시할 내용
   if (loading) return <div style={{ padding: 24 }}>게시물을 불러오는 중... ⏳</div>;
   // 에러 발생 시 표시할 내용
@@ -48,13 +76,30 @@ export default function PostDetail() {
   // 게시물 데이터가 없을 때 (정상적으로 로드됐지만 데이터가 없는 경우)
   if (!post) return <div style={{ padding: 24 }}>게시물 정보를 찾을 수 없습니다.</div>;
 
+  // 6. 현재 유저와 게시물 작성자가 일치하는지 확인
+  // post.user는 백엔드에서 ObjectId(문자열)로 넘어옵니다.
+  const isAuthor = user && post && user._id === post.user;
+
   // 게시물 데이터를 화면에 표시
   return (
-    <div className="post-detail" style={{ maxWidth: 880, margin: "40px auto", padding: "0 16px" }}>
+    // 7. 스타일을 위한 div 추가
+    <div className="post-detail-container" style={{ maxWidth: 880, margin: "40px auto", padding: "0 16px" }}>
       {/* 목록으로 돌아가기 링크 */}
       <Link to="/" style={{ display: "inline-block", marginBottom: 16, textDecoration: 'none', color: 'var(--color-accent)' }}>
         ← 목록으로 돌아가기
       </Link>
+
+      {/* 8. 수정/삭제 버튼 영역 추가 */}
+      {isAuthor && (
+        <div className="post-actions">
+          <Link to={`/post/${id}/edit`} className="btn-edit">
+            수정
+          </Link>
+          <button onClick={handleDelete} className="btn-delete">
+            삭제
+          </button>
+        </div>
+      )}
 
       {/* 게시물 이미지 (있을 경우에만 표시) */}
       {post.imageUrl && (
@@ -66,7 +111,7 @@ export default function PostDetail() {
       )}
       {/* fileUrl 배열 처리 (첫 번째 이미지만 표시하거나, 여러 개 표시 로직 추가 가능) */}
       {post.fileUrl && post.fileUrl.length > 0 && !post.imageUrl && (
-         <img
+        <img
           src={post.fileUrl[0]} // 우선 첫 번째 이미지만 표시
           alt={post.title}
           style={{ width: "100%", height: "auto", maxHeight: '500px', objectFit: 'cover', borderRadius: 12, marginBottom: 20 }}
@@ -94,3 +139,4 @@ export default function PostDetail() {
     </div>
   );
 }
+

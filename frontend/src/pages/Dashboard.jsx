@@ -75,6 +75,9 @@ import api from '../api/client';
             
             {/* 8. 게시물 목록 UI 추가 */}
             <h2>내 FoodTrail 📝</h2>
+            <Link to="/create" className='btn-create-post'>
+                새 글 작성하기 +
+            </Link>
             {loading && <p>게시물을 불러오는 중... ⏳</p>}
             {error && <p className="error-message" style={{color: "crimson"}}>{error}</p>}
             <div className="posts-grid">

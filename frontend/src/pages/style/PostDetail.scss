@@ -1,0 +1,49 @@
+.post-detail-container {
+    position: relative; // 버튼 위치의 기준점이 됨
+    padding-top: 40px; // 버튼이 들어갈 공간 확보
+
+    .post-actions {
+        // 목록가기 버튼과 분리 (오른쪽 상단 배치)
+        position: absolute;
+        top: 0;
+        right: 0; 
+        display: flex;
+        gap: 0.75rem;
+
+        // 링크와 버튼에 공통 스타일 적용
+        .btn-edit,
+        .btn-delete {
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none; // Link 태그 밑줄 제거
+            display: inline-block; // Link 태그가 padding을 갖도록
+            line-height: 1.5; // 버튼과 높이 맞춤
+        }
+
+        .btn-edit {
+            background-color: var(--color-white);
+            color: var(--color-accent);
+            border: 1px solid var(--color-accent);
+
+            &:hover {
+                background-color: #f8fdf8;
+            }
+        }
+
+        .btn-delete {
+            background-color: var(--color-error);
+            color: var(--color-white);
+            border: 1px solid var(--color-error);
+
+            &:hover {
+                opacity: 0.85;
+            }
+        }
+    }
+}
+
