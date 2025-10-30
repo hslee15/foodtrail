@@ -1,141 +1,121 @@
-import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import api from "../api/client"; // api 클라이언트 사용
-import './style/PostDetail.scss'; // 2. 스타일 시트 import
+import { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import api from '../api/client';
+import './style/PostDetail.scss'; // 스타일 시트 import
 
 export default function PostDetail({ user }) {
-  const { id } = useParams(); // URL에서 게시물 ID 가져오기
+  const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
-  const navigate = useNavigate(); // 4. 페이지 이동을 위해 navigate 사용
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("[PostDetail] id from URL:", id);
+    // ... (id 유효성 검사) ...
     if (!id || /[\{\}]/.test(id)) {
-      console.warn("[PostDetail] invalid id detected:", id);
-      setErr("잘못된 게시물 ID입니다. 카드 링크 또는 라우트 경로를 확인하세요. (예: /post/:id)");
+      console.warn('[PostDetail] invalid id detected:', id);
+      setErr('잘못된 게시물 ID입니다.');
       setLoading(false);
       return;
     }
 
     const fetchPost = async () => {
-      setLoading(true); // 로딩 시작
-      setErr(null); // 에러 초기화
+      setLoading(true);
+      setErr(null);
       try {
         const path = `/api/posts/${id}`;
-        console.log("[PostDetail] fetching:", path);
-        // api 클라이언트를 사용하여 백엔드에서 게시물 데이터 가져오기
+        console.log('[PostDetail] fetching:', path);
         const response = await api.get(path);
-        setPost(response.data); // 상태 업데이트
+        setPost(response.data);
       } catch (e) {
-        console.error("게시물 로딩 실패:", e);
+        console.error('게시물 로딩 실패:', e);
         const status = e?.response?.status;
         const message = e?.response?.data?.message;
-        // 사용자에게 보여줄 에러 메시지 설정 (상태코드 포함)
-        setErr(message ? `(${status || "에러"}) ${message}` : "게시물을 불러오는 중 오류가 발생했습니다.");
+        setErr(
+          message
+            ? `(${status || '에러'}) ${message}`
+            : '게시물을 불러오는 중 오류가 발생했습니다.'
+        );
       } finally {
-        setLoading(false); // 로딩 종료
+        setLoading(false);
       }
     };
 
     fetchPost();
   }, [id]);
 
-  // 5. 삭제 버튼 핸들러 추가
   const handleDelete = async () => {
-    // 🚨 중요: 실제 서비스에서는 confirm() 대신 커스텀 모달을 사용해야 합니다.
-    const isConfirmed = window.confirm("정말 이 게시물을 삭제하시겠습니까?");
+    // 🚨 실제 서비스에서는 confirm() 대신 커스텀 모달을 사용해야 합니다.
+    const isConfirmed = window.confirm('정말 이 게시물을 삭제하시겠습니까?');
     if (!isConfirmed) {
-       // confirm()이 브라우저 샌드박스 환경에서 작동하지 않을 수 있으므로,
-       // 일단 사용자 경험을 위해 true라고 가정하고 진행합니다.
-       // 실제로는 커스텀 모달을 구현해야 합니다.
-      console.log("삭제가 취소되었습니다. (실제 환경에서는 confirm이 작동해야 함)");
-       // return; // 원래는 여기서 중단되어야 함
+      console.log('삭제 취소');
+      return; // 사용자가 '취소'를 누르면 중단
     }
-    
-    // 임시로 confirm을 무시하고 삭제 진행 (테스트용)
-    console.warn("삭제 확인 모달이 비활성화 상태입니다. 삭제를 진행합니다.");
 
     try {
-      // 백엔드 삭제 API 호출
+      setLoading(true); // 삭제 시작 시 로딩
       await api.delete(`/api/posts/${id}`);
-      alert("게시물이 삭제되었습니다."); // 🚨 이것도 커스텀 알림창으로 대체 권장
-      navigate('/'); // 삭제 후 홈으로 이동
+      console.log('게시물이 삭제되었습니다.');
+      navigate('/');
     } catch (err) {
-      console.error("게시물 삭제 실패:", err);
-      setErr("게시물 삭제 중 오류가 발생했습니다.");
+      console.error('게시물 삭제 실패:', err);
+      setErr('게시물 삭제 중 오류가 발생했습니다.');
+      setLoading(false); // 실패 시 로딩 해제
     }
   };
 
+  if (loading)
+    return <div className="post-detail-message">게시물을 불러오는 중... ⏳</div>;
+  if (err)
+    return (
+      <div className="post-detail-message error">
+        ⚠️ {err}
+      </div>
+    );
+  if (!post)
+    return <div className="post-detail-message">게시물 정보를 찾을 수 없습니다.</div>;
 
-  // 로딩 중일 때 표시할 내용
-  if (loading) return <div style={{ padding: 24 }}>게시물을 불러오는 중... ⏳</div>;
-  // 에러 발생 시 표시할 내용
-  if (err) return <div style={{ padding: 24, color: "crimson" }}>⚠️ {err}</div>;
-  // 게시물 데이터가 없을 때 (정상적으로 로드됐지만 데이터가 없는 경우)
-  if (!post) return <div style={{ padding: 24 }}>게시물 정보를 찾을 수 없습니다.</div>;
-
-  // 6. 현재 유저와 게시물 작성자가 일치하는지 확인
-  // post.user는 백엔드에서 ObjectId(문자열)로 넘어옵니다.
   const isAuthor = user && post && user._id === post.user;
 
-  // 게시물 데이터를 화면에 표시
   return (
-    // 7. 스타일을 위한 div 추가
-    <div className="post-detail-container" style={{ maxWidth: 880, margin: "40px auto", padding: "0 16px" }}>
-      {/* 목록으로 돌아가기 링크 */}
-      <Link to="/" style={{ display: "inline-block", marginBottom: 16, textDecoration: 'none', color: 'var(--color-accent)' }}>
+    <div className="post-detail-container">
+      <Link to="/" className="back-link">
         ← 목록으로 돌아가기
       </Link>
 
-      {/* 8. 수정/삭제 버튼 영역 추가 */}
       {isAuthor && (
         <div className="post-actions">
           <Link to={`/post/${id}/edit`} className="btn-edit">
             수정
           </Link>
-          <button onClick={handleDelete} className="btn-delete">
-            삭제
+          <button
+            onClick={handleDelete}
+            className="btn-delete"
+            disabled={loading}
+          >
+            {loading ? '삭제 중...' : '삭제'}
           </button>
         </div>
       )}
 
-      {/* 게시물 이미지 (있을 경우에만 표시) */}
-      {post.imageUrl && (
+      {post.presignedImageUrl && (
         <img
-          src={post.imageUrl} // 실제 이미지 URL 사용
+          src={post.presignedImageUrl}
           alt={post.title}
-          style={{ width: "100%", height: "auto", maxHeight: '500px', objectFit: 'cover', borderRadius: 12, marginBottom: 20 }}
-        />
-      )}
-      {/* fileUrl 배열 처리 (첫 번째 이미지만 표시하거나, 여러 개 표시 로직 추가 가능) */}
-      {post.fileUrl && post.fileUrl.length > 0 && !post.imageUrl && (
-        <img
-          src={post.fileUrl[0]} // 우선 첫 번째 이미지만 표시
-          alt={post.title}
-          style={{ width: "100%", height: "auto", maxHeight: '500px', objectFit: 'cover', borderRadius: 12, marginBottom: 20 }}
+          className="post-detail-image"
         />
       )}
 
+      <h1 className="post-detail-title">{post.title}</h1>
 
-      {/* 게시물 제목 */}
-      <h1 style={{ margin: "0 0 12px", color: 'var(--color-main)' }}>{post.title}</h1>
-
-      {/* 게시물 작성일 */}
-      <p style={{ color: "#666", marginBottom: 24, fontSize: '0.9em' }}>
-        작성일: {post.createdAt ? new Date(post.createdAt).toLocaleString() : '날짜 정보 없음'}
+      <p className="post-detail-date">
+        작성일:{' '}
+        {post.createdAt
+          ? new Date(post.createdAt).toLocaleString()
+          : '날짜 정보 없음'}
       </p>
 
-      {/* 게시물 내용 */}
-      <div style={{ lineHeight: 1.7, fontSize: 16, whiteSpace: "pre-wrap", color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
-        {post.content}
-      </div>
-
-      {/* --- 추가 정보 표시 (필요한 경우) --- */}
-      {/* 예: 작성자 정보 */}
-      {/* {post.user && <p>작성자: {post.user.displayName || post.user.email}</p>} */}
-      {/* ------------------------------------ */}
+      <div className="post-detail-content">{post.content}</div>
     </div>
   );
 }

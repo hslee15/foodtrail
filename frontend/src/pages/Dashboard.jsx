@@ -1,53 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './style/Dashboard.scss';
-import api from '../api/client';
+import api from '../api/client'; // 1. api 클라이언트 import
 
-    function Dashboard({ user, onLogout }) {
-        const [posts, setPosts] = useState([]); 
-        const [filteredPosts, setFilteredPosts] = useState([]);
-        const [searchTerm, setSearchTerm] = useState('');
-        const [loading, setLoading]=useState(true);
-        const [error, setError]=useState(null);
+// 2. mockPosts (가짜 데이터) 삭제
 
+function Dashboard({ user, onLogout }) {
+    const [posts, setPosts] = useState([]); 
+    const [filteredPosts, setFilteredPosts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true); // 3. 로딩 상태 추가
+    const [error, setError] = useState(null); // 3. 에러 상태 추가
+
+    // 4. API 호출을 위한 useEffect 추가 (mockPosts 대신)
     useEffect(() => {
-
-        const fetchPosts=async()=>{
+        const fetchPosts = async () => {
             setLoading(true);
             setError(null);
             try {
-                const response=await api.get('/api/posts');
+                // 백엔드 API에서 실제 게시물 목록을 가져옵니다.
+                const response = await api.get('/api/posts');
+                // 백엔드 posts.js (GET /) 라우터는 fileUrl을 S3 주소 배열로 변환해서 줍니다.
                 setPosts(response.data);
                 setFilteredPosts(response.data);
-            } catch (error) {
-                console.error("게시물 로드 실패:",err);
+            } catch (err) {
+                console.error("게시물 로드 실패:", err);
                 setError("게시물을 불러오는 데 실패했습니다.");
             } finally {
                 setLoading(false);
             }
         };
-        
+
         fetchPosts();
-    }, []);
+    }, []); // 처음 한 번만 실행
 
-        // 5. 검색어(searchTerm)가 변경될 때마다 필터링 실행
-        useEffect(() => {
-            if (!searchTerm) {
-            setFilteredPosts(posts); // 검색어가 없으면 전체 목록 표시
-            } else {
-            const lowerCaseSearch = searchTerm.toLowerCase();
-            const filtered = posts.filter(post => 
-                post.title.toLowerCase().includes(lowerCaseSearch) ||
-                post.description.toLowerCase().includes(lowerCaseSearch)
-            );
-            setFilteredPosts(filtered);
-            }
-        }, [searchTerm, posts]); // searchTerm 또는 posts가 변경될 때마다 실행
+    // 5. [버그 수정] 검색 로직: post.description -> post.content
+    useEffect(() => {
+        if (!searchTerm) {
+        setFilteredPosts(posts);
+        } else {
+        const lowerCaseSearch = searchTerm.toLowerCase();
+        const filtered = posts.filter(post => 
+            (post.title && post.title.toLowerCase().includes(lowerCaseSearch)) ||
+            (post.content && post.content.toLowerCase().includes(lowerCaseSearch)) // 'description' 대신 'content'
+        );
+        setFilteredPosts(filtered);
+        }
+    }, [searchTerm, posts]);
 
-        // 6. 검색창 입력 핸들러
-        const handleSearchChange = (event) => {
-            setSearchTerm(event.target.value);
-        };
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
 
     return (
         <div className="main-container">
@@ -62,7 +65,7 @@ import api from '../api/client';
         </header>
 
         <main className="content-area">
-            {/* 7. 검색 기능 UI 추가 */}
+            {/* 검색 기능 UI */}
             <div className="search-container">
             <input
                 type="text"
@@ -73,27 +76,48 @@ import api from '../api/client';
             />
             </div>
             
-            {/* 8. 게시물 목록 UI 추가 */}
+            {/* 게시물 목록 헤더 (제목 + 글쓰기 버튼) */}
+            <div className="posts-header">
             <h2>내 FoodTrail 📝</h2>
-            <Link to="/create" className='btn-create-post'>
-                새 글 작성하기 +
+            <Link to="/create" className="btn-create-post">
+                새 글 작성하기 ＋
             </Link>
+            </div>
+            
+            {/* 6. 로딩 및 에러 처리 UI */}
             {loading && <p>게시물을 불러오는 중... ⏳</p>}
             {error && <p className="error-message" style={{color: "crimson"}}>{error}</p>}
+
             <div className="posts-grid">
-            {filteredPosts.length > 0 ? (
+            {!loading && !error && filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
+                // 7. [수정] 링크 경로는 post.number (PostDetail이 number를 ID로 사용)
                 <Link to={`/post/${post.number}`} key={post._id} className="post-card">
-                    <img src={post.imageUrl} alt={post.title} className="post-image" />
+                    
+                    {/* 8. [이미지 수정] 
+                    GET /api/posts/ (목록) 라우터는 'fileUrl' 배열에 Presigned URL을 담아옵니다.
+                    */}
+                    <img 
+                    src={post.fileUrl?.[0] || "/images/p.jpg"} // 첫 번째 이미지를 썸네일로 사용 (없으면 기본 이미지)
+                    alt={post.title} 
+                    className="post-image" 
+                    // 썸네일이 깨질 경우를 대비한 기본 이미지
+                    onError={(e) => { e.target.onerror = null; e.target.src = "/images/p.jpg"; }}
+                    />
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
-                    <p className="post-description">{post.description}</p>
+                    {/* 9. [버그 수정] 본문: post.description -> post.content */}
+                    <p className="post-description">{post.content?.substring(0, 60)}...</p>
                     </div>
                 </Link>
                 ))
             ) : (
-                // 검색 결과가 없을 때
-                <p className="no-results">'{searchTerm}'에 대한 검색 결과가 없습니다.</p>
+                // 검색 결과가 없거나 데이터가 없을 때
+                !loading && !error && (
+                <p className="no-results">
+                    {searchTerm ? `'${searchTerm}'에 대한 검색 결과가 없습니다.` : '아직 작성된 게시물이 없습니다.'}
+                </p>
+                )
             )}
             </div>
         </main>
@@ -101,3 +125,4 @@ import api from '../api/client';
     );
 }
 export default Dashboard;
+
