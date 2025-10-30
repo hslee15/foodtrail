@@ -1,46 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import './style/Dashboard.scss';
-
-// 2. 실제 데이터 대신 사용할 임시 목업(Mock) 데이터
-const mockPosts = [
-    { 
-        _id: 1, 
-        title: "우리 동네 파스타 맛집", 
-        description: "최근에 발견한 최고의 파스타 가게! 면 익힘이 완벽해요.", 
-        imageUrl: "/images/p.jpg" 
-    },
-    { 
-        _id: 2, 
-        title: "따뜻한 국밥 한 그릇", 
-        description: "비 오는 날엔 역시 뜨끈한 국밥이죠. 깍두기도 맛있습니다.", 
-        imageUrl: "/images/g.jpg" 
-    },
-    { 
-        _id: 3, 
-        title: "인생 녹차 케이크", 
-        description: "디저트 배는 따로 있죠. 쌉싸름한 녹차와 부드러운 크림의 조화.", 
-        imageUrl: "/images/c.jpg" 
-    },
-    { 
-        _id: 4, 
-        title: "신선한 샐러드", 
-        description: "건강한 한 끼 식사. 재료가 정말 신선해서 기분이 좋았습니다.", 
-        imageUrl: "/images/s.jpg" 
-    },
-    ];
-
+import api from '../api/client';
 
     function Dashboard({ user, onLogout }) {
         const [posts, setPosts] = useState([]); 
         const [filteredPosts, setFilteredPosts] = useState([]);
         const [searchTerm, setSearchTerm] = useState('');
+        const [loading, setLoading]=useState(true);
+        const [error, setError]=useState(null);
 
-        useEffect(() => {
-            // (나중에 이 부분을 api.get('/api/posts') 같은 실제 API 호출로 대체하세요)
-            setPosts(mockPosts);
-            setFilteredPosts(mockPosts); // 처음엔 모든 게시물 표시
-        }, []);
+    useEffect(() => {
+
+        const fetchPosts=async()=>{
+            setLoading(true);
+            setError(null);
+            try {
+                const response=await api.get('/api/posts');
+                setPosts(response.data);
+                setFilteredPosts(response.data);
+            } catch (error) {
+                console.error("게시물 로드 실패:",err);
+                setError("게시물을 불러오는 데 실패했습니다.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchPosts();
+    }, []);
 
         // 5. 검색어(searchTerm)가 변경될 때마다 필터링 실행
         useEffect(() => {
@@ -87,10 +75,12 @@ const mockPosts = [
             
             {/* 8. 게시물 목록 UI 추가 */}
             <h2>내 FoodTrail 📝</h2>
+            {loading && <p>게시물을 불러오는 중... ⏳</p>}
+            {error && <p className="error-message" style={{color: "crimson"}}>{error}</p>}
             <div className="posts-grid">
             {filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
-                <Link to={`/post/${post._id}`} key={post._id} className="post-card">
+                <Link to={`/post/${post.number}`} key={post._id} className="post-card">
                     <img src={post.imageUrl} alt={post.title} className="post-image" />
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
