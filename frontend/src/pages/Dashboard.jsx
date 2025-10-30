@@ -20,7 +20,7 @@ function Dashboard({ user, onLogout }) {
             try {
                 // 백엔드 API에서 실제 게시물 목록을 가져옵니다.
                 const response = await api.get('/api/posts');
-                // 백엔드 posts.js (GET /) 라우터는 fileUrl을 S3 주소 배열로 변환해서 줍니다.
+                // 백엔드 posts.js (GET /) 라우터는 이제 presignedImageUrl을 반환합니다.
                 setPosts(response.data);
                 setFilteredPosts(response.data);
             } catch (err) {
@@ -95,10 +95,10 @@ function Dashboard({ user, onLogout }) {
                 <Link to={`/post/${post.number}`} key={post._id} className="post-card">
                     
                     {/* 8. [이미지 수정] 
-                    GET /api/posts/ (목록) 라우터는 'fileUrl' 배열에 Presigned URL을 담아옵니다.
+                    GET /api/posts/ (목록) 라우터도 'presignedImageUrl'을 사용하도록 수정합니다.
                     */}
                     <img 
-                    src={post.fileUrl?.[0] || "/images/p.jpg"} // 첫 번째 이미지를 썸네일로 사용 (없으면 기본 이미지)
+                    src={post.presignedImageUrl || "/images/p.jpg"} // 썸네일로 presignedImageUrl 사용
                     alt={post.title} 
                     className="post-image" 
                     // 썸네일이 깨질 경우를 대비한 기본 이미지
