@@ -136,7 +136,7 @@ router.get('/my', authenticateToken, async (req, res, next) => {
 // GET /api/posts/:id (상세 보기)
 router.get('/:id', ensureValidNumber, async (req, res, next) => {
   try {
-    const doc = await Post.findOne({ number: req.params.id }).lean();
+    const doc = await Post.findOne({ number: req.postIdAsNumber }).lean();
     if (!doc) return res.status(404).json({ message: '존재하지 않는 게시글' });
     
     // 💡 [수정] 헬퍼 함수를 사용해 S3 URL 변환 로직 추가
@@ -159,7 +159,7 @@ router.put('/:id', authenticateToken, ensureValidNumber, async (req, res, next) 
     // (생략: 글 작성자 본인 확인 로직이 필요할 수 있습니다)
 
     const updated = await Post.findOneAndUpdate(
-      { number: req.params.id }, // 'number' 필드로 찾음
+      { number: req.postIdAsNumber }, // 'number' 필드로 찾음
       { $set: updates },
       { new: true, runValidators: true }
     );
@@ -178,7 +178,7 @@ router.delete('/:id', authenticateToken, ensureValidNumber, async (req, res, nex
   try {
     // (생략: 글 작성자 본인 확인 로직이 필요할 수 있습니다)
 
-    const deleted = await Post.findOneAndDelete({ number: req.params.id });
+    const deleted = await Post.findOneAndDelete({ number: req.postIdAsNumber });
     if (!deleted) return res.status(404).json({ message: '존재하지 않는 게시글' });
 
     res.json({ ok: true, id: deleted._id });

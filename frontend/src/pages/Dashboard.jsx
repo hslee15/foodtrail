@@ -95,15 +95,20 @@ function Dashboard({ user, onLogout }) {
                 <Link to={`/post/${post.number}`} key={post._id} className="post-card">
                     
                     {/* 8. [이미지 수정] 
-                    GET /api/posts/ (목록) 라우터도 'presignedImageUrl'을 사용하도록 수정합니다.
+                    presignedImageUrl이 있을 때만 img 태그를, 없으면 빈 div를 렌더링합니다.
+                    (CSS가 높이와 배경색을 잡아줍니다)
                     */}
+                    {post.presignedImageUrl ? (
                     <img 
-                    src={post.presignedImageUrl || "/images/p.jpg"} // 썸네일로 presignedImageUrl 사용
-                    alt={post.title} 
-                    className="post-image" 
-                    // 썸네일이 깨질 경우를 대비한 기본 이미지
-                    onError={(e) => { e.target.onerror = null; e.target.src = "/images/p.jpg"; }}
+                        src={post.presignedImageUrl}
+                        alt={post.title} 
+                        className="post-image" 
                     />
+                    ) : (
+                    // 이미지가 없을 때 180px 높이를 유지하는 placeholder
+                    // SCSS 파일의 .post-image { height: 180px; ... }가 적용됩니다.
+                    <div className="post-image" />
+                    )}
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
                     {/* 9. [버그 수정] 본문: post.description -> post.content */}
@@ -125,4 +130,3 @@ function Dashboard({ user, onLogout }) {
     );
 }
 export default Dashboard;
-
