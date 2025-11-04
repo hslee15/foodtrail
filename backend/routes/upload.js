@@ -4,12 +4,6 @@ const { presignPut } = require("../src/s3"); // S3 Presign 함수
 const auth = require('../middlewares/auth'); // 사용자 인증
 const { v4: uuidv4 } = require("uuid"); // 고유 ID 생성
 
-/**
- * 1단계: 프론트엔드에서 파일 업로드 전에 호출하는 라우트
- * GET /api/upload?filename=test.jpg&contentType=image/jpeg
- * * S3에 업로드할 수 있는 1회용 URL(presigned URL)과
- * S3에 저장될 파일 키(key)를 반환합니다.
- */
 router.get("/", auth, async (req, res, next) => {
   try {
     const { filename, contentType } = req.query;
