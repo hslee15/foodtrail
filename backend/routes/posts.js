@@ -53,8 +53,9 @@ async function addPresignedUrls(posts) {
       const key = p.imageUrl || (Array.isArray(p.fileUrl) ? p.fileUrl[0] : null);
 
       // 키가 있으면 Presigned URL을 생성합니다. (없으면 null)
+      const S3_BASE_URL=process.env.S3_BASE_URL || '';
       const presignedImageUrl = key
-        ? (key.startsWith("http") ? key : await presignGet(key, 3600))
+        ? (key.startsWith("http") ? key : S3_BASE_URL + key)
         : null;
       
       return { ...p, presignedImageUrl };
