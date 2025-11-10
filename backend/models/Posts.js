@@ -30,6 +30,14 @@ const postSchema = new mongoose.Schema(
         type: String, // 썸네일 이미지 S3 키 또는 URL
         trim: true,
         },
+        rating: {
+            min: 0,
+            max: 5,
+            default: 0,
+        },
+        fileUrl: {
+            type: [String],
+        }
     },
     {
         timestamps: true, // createdAt, updatedAt 자동 생성

@@ -4,6 +4,7 @@ import api from '../api/client';
 import axios from 'axios';
 // 1. PostCreate와 동일한 스타일을 재사용합니다.
 import './style/PostCreate.scss';
+import StarRatingInput from '../components/StarRatingInput';
 
 export default function PostEdit() {
   const { id } = useParams(); // URL에서 게시물 ID 가져오기
@@ -14,6 +15,7 @@ export default function PostEdit() {
   const [file, setFile] = useState(null); // 새로 선택된 파일
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
   const [existingImageKey, setExistingImageKey] = useState(null); // 기존 S3 키
+  const [rating, setRating] = useState(0)
 
   const [loading, setLoading] = useState(true); // 처음엔 데이터 로딩
   const [error, setError] = useState(null);
@@ -29,6 +31,7 @@ useEffect(() => {
 
             setTitle(post.title);
             setContent(post.content);
+            seetRating(post.rating);
 
             // --- 백엔드 수정 사항 반영 ---
             // 1. 표시용 URL 설정
@@ -97,6 +100,7 @@ useEffect(() => {
         const postData = {
             title,
             content,
+            rating,
             fileUrl: finalFileKey ? [finalFileKey] : [],
             imageUrl: finalFileKey || null,
         };
@@ -160,6 +164,16 @@ useEffect(() => {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
+                disabled={loading}
+            />
+            </div>
+
+            {/* [추가] 별점 입력 */}
+            <div className="form-group">
+            <label>별점</label>
+            <StarRatingInput
+                rating={rating}
+                onRatingChange={setRating}
                 disabled={loading}
             />
             </div>

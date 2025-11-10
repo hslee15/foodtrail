@@ -1,49 +1,121 @@
+// frontend/src/pages/style/PostDetail.scss
+
 .post-detail-container {
-    position: relative; // 버튼 위치의 기준점이 됨
-    padding-top: 40px; // 버튼이 들어갈 공간 확보
-
-    .post-actions {
-        // 목록가기 버튼과 분리 (오른쪽 상단 배치)
-        position: absolute;
-        top: 0;
-        right: 0; 
-        display: flex;
-        gap: 0.75rem;
-
-        // 링크와 버튼에 공통 스타일 적용
-        .btn-edit,
-        .btn-delete {
-            padding: 0.5em 1em;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none; // Link 태그 밑줄 제거
-            display: inline-block; // Link 태그가 padding을 갖도록
-            line-height: 1.5; // 버튼과 높이 맞춤
-        }
-
-        .btn-edit {
-            background-color: var(--color-white);
-            color: var(--color-accent);
-            border: 1px solid var(--color-accent);
-
-            &:hover {
-                background-color: #f8fdf8;
-            }
-        }
-
-        .btn-delete {
-            background-color: var(--color-error);
-            color: var(--color-white);
-            border: 1px solid var(--color-error);
-
-            &:hover {
-                opacity: 0.85;
-            }
-        }
-    }
+  // --- 1. 기본 카드 레이아웃 ---
+  max-width: 768px;
+  margin: 40px auto;
+  padding: 2.5rem;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--color-shadow-light);
+  color: var(--color-text);
 }
 
+// --- 2. 헤더 (뒤로가기 링크) ---
+.post-detail-header {
+  margin-bottom: 2rem;
+  // [수정] flex 속성 제거 (자식 요소가 하나뿐임)
+}
+
+.back-link {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: var(--color-main);
+    text-decoration: underline;
+  }
+}
+
+// --- 3. 대표 이미지 ---
+.post-detail-image {
+  width: 100%;
+  height: auto;
+  max-height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 2.5rem;
+}
+
+// === 4. [신규] 제목 + 작성일시 헤더 ===
+.post-title-header {
+  display: flex;
+  justify-content: space-between; // 1. 제목과 날짜를 양 끝으로
+  align-items: baseline;         // 2. 텍스트 베이스라인 정렬
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+// --- 5. 게시물 제목 (수정) ---
+h1 {
+  color: var(--color-main);
+  margin: 0; // [수정] 여백은 부모(post-title-header)가 관리
+  font-size: 2.4rem;
+  line-height: 1.2;
+  word-break: keep-all; // 제목이 깨지지 않도록
+}
+
+// --- 6. 작성일 (수정) ---
+.post-meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin: 0 0 0 1rem; // [수정] 제목과 최소 간격
+  flex-shrink: 0;      // [추가] 텍스트가 줄어들지 않도록
+  white-space: nowrap; // [추가] 날짜가 줄바꿈되지 않도록
+}
+
+// --- 7. 게시물 본문 ---
+.post-content {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--color-text);
+  white-space: pre-wrap; // 줄바꿈 반영
+  word-break: keep-all;
+  margin-bottom: 2.5rem; // [추가] 하단 버튼과 여백
+}
+
+// === 8. [수정] 수정/삭제 버튼 (하단 정렬) ===
+.post-actions {
+  display: flex;
+  justify-content: flex-end; // [수정] 오른쪽 정렬
+  gap: 1rem;
+  border-top: 1px solid var(--color-border); // [추가] 구분선
+  padding-top: 1.5rem; // [추가] 구분선 위 여백
+
+  .btn-edit,
+  .btn-delete {
+    padding: 0.5em 1.2em; // 패딩 살짝 조정
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem; // 버튼 크기 키움
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.5;
+  }
+
+  .btn-edit {
+    background-color: var(--color-white);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+
+    &:hover {
+      background-color: #f8fdf8;
+    }
+  }
+
+  .btn-delete {
+    background-color: var(--color-error);
+    color: var(--color-white);
+    border: 1px solid var(--color-error);
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}

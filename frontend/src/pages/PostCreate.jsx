@@ -1,16 +1,16 @@
-// frontend/src/pages/PostCreate.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import './style/PostCreate.scss'; // 2단계에서 만들 SCSS 파일
 import axios from 'axios'; // S3에 직접 업로드하기 위해 axios import
+import StarRatingInput from '../components/StarRatingInput';
 
 export default function PostCreate() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null); // 업로드할 파일 객체
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
+  const [rating, setRating] = useState(0)
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -69,6 +69,7 @@ export default function PostCreate() {
       const postData = {
         title,
         content,
+        rating,
         // S3 키가 있으면 fileUrl과 imageUrl에 넣어줍니다.
         fileUrl: uploadedFileKey ? [uploadedFileKey] : [],
         imageUrl: uploadedFileKey || null,
@@ -126,6 +127,16 @@ export default function PostCreate() {
             type="file"
             accept="image/*"
             onChange={handleFileChange}
+            disabled={loading}
+          />
+        </div>
+        
+        {/* [추가] 별점 입력 */}
+        <div className="form-group">
+          <label>별점</label>
+          <StarRatingInput
+            rating={rating}
+            onRatingChange={setRating}
             disabled={loading}
           />
         </div>
