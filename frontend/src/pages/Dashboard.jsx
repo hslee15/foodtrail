@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './style/Dashboard.scss';
-import api from '../api/client'; // 1. api 클라이언트 import
+import api from '../api/client';
+import StarRatingDisplay from '../components/StarRatingDisplay';
 
 // 2. mockPosts (가짜 데이터) 삭제
 
@@ -105,13 +106,15 @@ function Dashboard({ user, onLogout }) {
                         className="post-image" 
                     />
                     ) : (
-                    // 이미지가 없을 때 180px 높이를 유지하는 placeholder
-                    // SCSS 파일의 .post-image { height: 180px; ... }가 적용됩니다.
                     <div className="post-image" />
                     )}
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
-                    {/* 9. [버그 수정] 본문: post.description -> post.content */}
+                    
+                    <div style={{ margin: `0.5rem 0` }}>
+                        <StarRatingDisplay rating={post.rating} />
+                    </div>
+
                     <p className="post-description">{post.content?.substring(0, 60)}...</p>
                     </div>
                 </Link>

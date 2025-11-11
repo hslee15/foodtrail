@@ -1,0 +1,20 @@
+.star-rating-display {
+    display: flex;
+    font-size: 1.1rem; // 카드에 맞춰 크기 조절
+    line-height: 1;
+
+    .star {
+        &.full {
+        color: var(--color-main); // 채워진 별 (index.css 변수)
+        }
+        &.empty {
+        color: var(--color-border); // 비어있는 별 (index.css 변수)
+        }
+    }
+
+    // 평가가 없을 때
+    &.empty {
+        font-size: 0.9rem;
+        color: #999;
+    }
+}

@@ -31,7 +31,7 @@ useEffect(() => {
 
             setTitle(post.title);
             setContent(post.content);
-            seetRating(post.rating);
+            setRating(post.rating || 0);
 
             // --- 백엔드 수정 사항 반영 ---
             // 1. 표시용 URL 설정

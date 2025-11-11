@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../api/client"; 
 import './style/PostDetail.scss'; 
+import StarRatingDisplay from "../components/StarRatingDisplay";
 
 export default function PostDetail({ user }) {
   const { id } = useParams(); 
@@ -85,7 +86,6 @@ export default function PostDetail({ user }) {
         />
       )}
 
-      {/* [신규] 제목과 작성일시를 묶는 컨테이너 */}
       <div className="post-title-header">
         <h1>{post.title}</h1>
         <p className="post-meta">
@@ -93,12 +93,14 @@ export default function PostDetail({ user }) {
         </p>
       </div>
 
-      {/* 게시물 내용 */}
+      <div style={{ marginBottom: `2rem`, fontSize: `1.5rem`}}>
+        <StarRatingDisplay rating={post.rating} />
+      </div>
+
       <div className="post-content">
         {post.content}
       </div>
 
-      {/* [수정] 수정/삭제 버튼을 하단으로 이동시킵니다. */}
       {isAuthor && (
         <div className="post-actions">
           <Link to={`/post/${id}/edit`} className="btn-edit">
