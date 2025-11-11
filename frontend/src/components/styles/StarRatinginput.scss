@@ -1,7 +1,5 @@
 .star-rating-input {
     display: flex;
-    flex-direction: row-reverse; // 1. 별을 오른쪽부터 채우기 위한 트릭
-    justify-content: flex-end; // 2. 오른쪽 정렬
     font-size: 2.5rem;
     color: var(--color-border); // 비어있는 별 색상
     cursor: pointer;
@@ -14,12 +12,7 @@
     .star {
         transition: color 0.1s ease-in-out;
 
-        // 3. 호버/선택 시 색상 변경
-        // (row-reverse 때문에 ~ (tilde) 선택자 사용이 편리함)
-        &:hover,
-        &:hover ~ .star,
-        &.active, // JS가 active 클래스를 제어
-        &.active ~ .star { // JS가 active 클래스를 제어
+        &.active { // JS가 active 클래스를 제어
         color: var(--color-main); // 채워진 별 색상
         }
     }

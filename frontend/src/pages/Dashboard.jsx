@@ -79,7 +79,7 @@ function Dashboard({ user, onLogout }) {
             
             {/* 게시물 목록 헤더 (제목 + 글쓰기 버튼) */}
             <div className="posts-header">
-            <h2>내 FoodTrail 📝</h2>
+            <h2>My List 📝</h2>
             <Link to="/create" className="btn-create-post">
                 새 글 작성하기 ＋
             </Link>
@@ -95,10 +95,6 @@ function Dashboard({ user, onLogout }) {
                 // 7. [수정] 링크 경로는 post.number (PostDetail이 number를 ID로 사용)
                 <Link to={`/post/${post.number}`} key={post._id} className="post-card">
                     
-                    {/* 8. [이미지 수정] 
-                    presignedImageUrl이 있을 때만 img 태그를, 없으면 빈 div를 렌더링합니다.
-                    (CSS가 높이와 배경색을 잡아줍니다)
-                    */}
                     {post.presignedImageUrl ? (
                     <img 
                         src={post.presignedImageUrl}
@@ -111,11 +107,13 @@ function Dashboard({ user, onLogout }) {
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
                     
-                    <div style={{ margin: `0.5rem 0` }}>
+                    <div style={{ margin: `0.5rem 0`, fontSize:`1.5rem`}}>
                         <StarRatingDisplay rating={post.rating} />
                     </div>
-
                     <p className="post-description">{post.content?.substring(0, 60)}...</p>
+                    <p className="post-date">
+                        {new Date(post.createdAt).toLocaleDateString()}
+                    </p>
                     </div>
                 </Link>
                 ))

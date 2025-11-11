@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles/StarRatingInput.scss'; // 2. 스타일 파일 import
+import './styles/StarRatingInput.scss'
 
 /**
  * 별점 입력 컴포넌트
@@ -22,7 +22,6 @@ export default function StarRatingInput({ rating = 0, onRatingChange, disabled =
 
     const handleClick = (index) => {
         if (disabled) return;
-        // 이미 선택된 별을 다시 누르면 0점으로 리셋
         const newRating = index === rating ? 0 : index;
         if (onRatingChange) {
         onRatingChange(newRating);

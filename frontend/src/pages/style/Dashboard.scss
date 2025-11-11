@@ -18,6 +18,7 @@
     h1 {
         margin: 0;
         font-size: 1.8rem;
+        color: white;
     }
 
     .user-info {
@@ -115,7 +116,7 @@
         background-color: var(--color-white);
         border-radius: 12px;
         box-shadow: 0 4px 12px var(--color-shadow-light);
-        overflow: hidden; /* 이미지 모서리 둥글게 */
+        overflow: hidden;
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         cursor: pointer;
         box-sizing: border-box;
@@ -134,13 +135,23 @@
         }
 
         .post-content {
-        padding: 1.2rem;
+            padding: 0.8rem 0.8rem 0.3rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .post-title {
         font-size: 1.25rem;
         color: var(--color-main);
         margin: 0 0 0.5rem 0;
+        }
+
+        .post-date{
+            font-size: 0.85rem;
+            color: #888;
+            text-align: right;
+            margin-top: 0.6rem;
+            margin-bottom: 0;
         }
 
         .post-description {

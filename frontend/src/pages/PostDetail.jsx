@@ -13,7 +13,6 @@ export default function PostDetail({ user }) {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    // ... (기존 useEffect 로직은 그대로 둡니다) ...
     console.log("[PostDetail] id from URL:", id);
     if (!id || /[\{\}]/.test(id)) {
       console.warn("[PostDetail] invalid id detected:", id);
@@ -42,7 +41,6 @@ export default function PostDetail({ user }) {
   }, [id]);
 
   const handleDelete = async () => {
-    // ... (기존 handleDelete 로직은 그대로 둡니다) ...
     const isConfirmed = window.confirm("정말 이 게시물을 삭제하시겠습니까?");
     if (isConfirmed === false) { 
       console.log("삭제가 취소되었습니다.");
@@ -70,7 +68,6 @@ export default function PostDetail({ user }) {
 
   return (
     <div className="post-detail-container">
-      {/* [수정] 헤더에는 "목록으로" 링크만 남깁니다. */}
       <div className="post-detail-header">
         <Link to="/" className="back-link">
           ← 목록으로 돌아가기
@@ -93,7 +90,7 @@ export default function PostDetail({ user }) {
         </p>
       </div>
 
-      <div style={{ marginBottom: `2rem`, fontSize: `1.5rem`}}>
+      <div style={{ marginBottom: `2rem`, fontSize: `2rem`}}>
         <StarRatingDisplay rating={post.rating} />
       </div>
 

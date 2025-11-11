@@ -6,7 +6,6 @@ import './styles/StarRatingDisplay.scss';
  * @param {number} rating - 표시할 별점 (0-5)
  */
 export default function StarRatingDisplay({ rating = 0 }) {
-  // 별점이 0이거나 null이면 표시하지 않음
     if (!rating || rating === 0) {
         return <div className="star-rating-display empty">평가 없음</div>;
     }
