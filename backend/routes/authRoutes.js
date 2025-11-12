@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt")
 const User = require("../models/User")
 const auth=require('../middlewares/auth')
 
-
 function makeToken(user) {
     return jwt.sign(
         {
@@ -40,7 +39,7 @@ router.post("/register", async(req,res) => {
         const passwordHash = await bcrypt.hash(password, 10)
 
         const validRoles = ["user", "admin"]
-        const safeRole = validRoles.includes(role) ? role : "user"
+        const safeRole="user"
 
         const user = await User.create({
             email,
@@ -194,7 +193,7 @@ router.post("/logout",async(req,res)=>{
         })
         return res.status(200).json({message:'로그아웃 성공'})
     } catch (error) {
-        return RegExp.status(500).json({message:'로그아웃 실패',error:error.message})
+        return res.status(500).json({message:'로그아웃 실패',error:error.message})
     }
 })
 
