@@ -37,6 +37,9 @@ app.use("/api/upload", uploadRoutes);
 const postRoutes = require("./routes/posts");
 app.use("/api/posts", postRoutes);
 
+const adminRoutes = require("./routes/adminRoutes");
+app.use("/api/admin", adminRoutes);
+
 
 // --- 에러 핸들러 ---
 // 이 404 핸들러는 *모든* 라우트 등록보다 뒤에 있어야 합니다.
