@@ -18,7 +18,7 @@ function Dashboard({ user, onLogout }) {
             setLoading(true);
             setError(null);
             try {
-                const response = await api.get('/api/posts');
+                const response = await api.get('/api/posts/my');
                 setPosts(response.data);
                 setFilteredPosts(response.data); 
             } catch (err) {
