@@ -7,14 +7,41 @@ const User = require('../models/User');
 
 router.use(auth, requireAdmin);
 
+async function addPresignedUrls(posts) {
+const postArray = Array.isArray(posts) ? posts : [posts];
+
+  // 2. 배열을 순회하며 S3 URL을 생성합니다.
+    const processedPosts = await Promise.all(
+        postArray.map(async (p) => {
+        // 이 게시물의 대표 S3 키를 찾습니다.
+        const key = p.imageUrl || (Array.isArray(p.fileUrl) ? p.fileUrl[0] : null);
+
+        // 키가 있으면 Presigned URL을 생성합니다. (없으면 null)
+        // .env 파일에 S3_BASE_URL이 정의되어 있다고 가정합니다. (posts.js와 동일)
+        const S3_BASE_URL = process.env.S3_BASE_URL || '';
+        const presignedImageUrl = key
+            ? (key.startsWith("http") ? key : S3_BASE_URL + key) // 이미 완전한 URL이면 그대로 사용
+            : null;
+        
+        // .lean()을 사용했으므로 p는 일반 객체입니다.
+        return { ...p, presignedImageUrl };
+        })
+    );
+
+    // 3. 원래 형식(객체 또는 배열)으로 되돌려줍니다.
+    return Array.isArray(posts) ? processedPosts : processedPosts[0];
+}
 
 router.get('/posts', async (req, res) => {
     try {
         const posts = await Post.find()
             .populate('user', 'email displayName')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const postsWithUrls=await addPresignedUrls(posts);
             
-        res.json(posts);
+        res.json(postsWithUrls);
     } catch (error) {
         res.status(500).json({ message: '모든 게시물 조회 실패', error });
     }

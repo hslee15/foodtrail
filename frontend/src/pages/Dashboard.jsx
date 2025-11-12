@@ -145,7 +145,6 @@ function Dashboard({ user, onLogout }) {
                         <StarRatingDisplay rating={post.rating} />
                     </div>
 
-                    {/* [수정] 'user?.'로 안전하게 접근 */}
                     {user?.role === 'admin' && (
                         <p className="post-author">
                             작성자: {post.user?.displayName || post.user?.email || '알 수 없음'}

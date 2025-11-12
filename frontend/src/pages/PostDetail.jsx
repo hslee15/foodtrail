@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import api from "../api/client"; 
+import api from "../api/client.js"; // .js 확장자 추가
 import './style/PostDetail.scss'; 
-import StarRatingDisplay from "../components/StarRatingDisplay";
+import StarRatingDisplay from "../components/StarRatingDisplay.jsx"; // .jsx 확장자 추가
 
 export default function PostDetail({ user }) {
   const { id } = useParams(); 
@@ -40,8 +40,18 @@ export default function PostDetail({ user }) {
     fetchPost();
   }, [id]);
 
+  const isAuthor = user && post && user._id === post.user;
+  const isAdmin = user && user.role === 'admin';
+
   const handleDelete = async () => {
-    const isConfirmed = window.confirm("정말 이 게시물을 삭제하시겠습니까?");
+    
+    // [수정] 관리자/작성자 여부에 따라 확인 메시지 변수 사용
+    const confirmMessage = isAdmin && !isAuthor
+      ? "관리자 권한으로 이 게시물을 삭제하시겠습니까?"
+      : "정말 이 게시물을 삭제하시겠습니까?";
+
+    // [수정] 하드코딩된 메시지 대신 confirmMessage 변수 사용
+    const isConfirmed = window.confirm(confirmMessage); 
     if (isConfirmed === false) { 
       console.log("삭제가 취소되었습니다.");
       return; 
@@ -50,7 +60,14 @@ export default function PostDetail({ user }) {
     setIsDeleting(true); 
     setErr(null);
     try {
-      await api.delete(`/api/posts/${id}`);
+      // [수정] 논리 오류 수정 (isAdmin && !isAuthor)
+      if (isAdmin && !isAuthor) {
+        await api.delete(`/api/admin/posts/${id}`);
+      } else {
+        await api.delete(`/api/posts/${id}`);
+      }
+      // [수정] 중복되던 API 호출 삭제
+      // await api.delete(`/api/posts/${id}`); // <- 이 부분이 중복이었음
       alert("게시물이 삭제되었습니다.");
       navigate('/'); 
     } catch (err) {
@@ -63,8 +80,6 @@ export default function PostDetail({ user }) {
   if (loading) return <div style={{ padding: 24 }}>게시물을 불러오는 중... ⏳</div>;
   if (err) return <div style={{ padding: 24, color: "crimson" }}>⚠️ {err}</div>;
   if (!post) return <div style={{ padding: 24 }}>게시물 정보를 찾을 수 없습니다.</div>;
-
-  const isAuthor = user && post && user._id === post.user;
 
   return (
     <div className="post-detail-container">
@@ -112,6 +127,18 @@ export default function PostDetail({ user }) {
           </button>
         </div>
       )}
-    </div>
+
+      {isAdmin && !isAuthor && (
+        <div className="post-actions admin-actions">
+          <button
+            onClick={handleDelete}
+            className="btn-delete-admin"
+            disabled={isDeleting}
+          >
+            {isDeleting ? '삭제 중...' : '관리자 삭제'}
+          </button>
+        </div> 
+      )}
+    </div> 
   );
 }
