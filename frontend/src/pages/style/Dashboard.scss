@@ -65,6 +65,21 @@
         }
     }
 
+    .rating-filter-container{
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 1;
+
+        span{
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        span.star{
+            font-size: 1.8rem;
+        }
+    }
+
     /* 2. 게시물 그리드 제목 */
     h2 {
         color: var(--color-text);
@@ -74,18 +89,16 @@
         // margin-bottom: 1.5rem; // .posts-header 로 이동
     }
 
-    /* [추가] 게시물 헤더 (제목 + 글쓰기 버튼) */
     .posts-header {
         display: flex; 
         justify-content: space-between; 
         align-items: center; 
-        margin-bottom: 1.5rem; // h2에 있던 margin을 여기로 이동
+        margin-bottom: 1.5rem; 
 
         h2 {
-            margin-bottom: 0; // div가 margin을 담당하므로
+            margin-bottom: 0; 
         }
 
-        /* '새 글 작성하기' 버튼 스타일 */
         .btn-create-post {
             background-color: var(--color-accent); 
             color: var(--color-accent-text); 

@@ -3,27 +3,24 @@ import { Link } from 'react-router-dom';
 import './style/Dashboard.scss';
 import api from '../api/client';
 import StarRatingDisplay from '../components/StarRatingDisplay';
-
-// 2. mockPosts (가짜 데이터) 삭제
+import StarRatingInput from '../components/StarRatingInput'; 
 
 function Dashboard({ user, onLogout }) {
     const [posts, setPosts] = useState([]); 
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(true); // 3. 로딩 상태 추가
-    const [error, setError] = useState(null); // 3. 에러 상태 추가
+    const [ratingFilter, setRatingFilter] = useState(0);
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
 
-    // 4. API 호출을 위한 useEffect 추가 (mockPosts 대신)
     useEffect(() => {
         const fetchPosts = async () => {
             setLoading(true);
             setError(null);
             try {
-                // 백엔드 API에서 실제 게시물 목록을 가져옵니다.
                 const response = await api.get('/api/posts');
-                // 백엔드 posts.js (GET /) 라우터는 이제 presignedImageUrl을 반환합니다.
                 setPosts(response.data);
-                setFilteredPosts(response.data);
+                setFilteredPosts(response.data); 
             } catch (err) {
                 console.error("게시물 로드 실패:", err);
                 setError("게시물을 불러오는 데 실패했습니다.");
@@ -33,21 +30,26 @@ function Dashboard({ user, onLogout }) {
         };
 
         fetchPosts();
-    }, []); // 처음 한 번만 실행
+    }, []);
 
-    // 5. [버그 수정] 검색 로직: post.description -> post.content
     useEffect(() => {
-        if (!searchTerm) {
-        setFilteredPosts(posts);
-        } else {
-        const lowerCaseSearch = searchTerm.toLowerCase();
-        const filtered = posts.filter(post => 
-            (post.title && post.title.toLowerCase().includes(lowerCaseSearch)) ||
-            (post.content && post.content.toLowerCase().includes(lowerCaseSearch)) // 'description' 대신 'content'
-        );
-        setFilteredPosts(filtered);
+        let filtered = posts; 
+
+        if (searchTerm) {
+            const lowerCaseSearch = searchTerm.toLowerCase();
+            filtered = filtered.filter(post => 
+                (post.title && post.title.toLowerCase().includes(lowerCaseSearch)) ||
+                (post.content && post.content.toLowerCase().includes(lowerCaseSearch))
+            );
         }
-    }, [searchTerm, posts]);
+
+        if (ratingFilter > 0) {
+            filtered = filtered.filter(post => post.rating === ratingFilter);
+        }
+
+        setFilteredPosts(filtered);
+        
+    }, [searchTerm, ratingFilter, posts]); 
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -66,7 +68,6 @@ function Dashboard({ user, onLogout }) {
         </header>
 
         <main className="content-area">
-            {/* 검색 기능 UI */}
             <div className="search-container">
             <input
                 type="text"
@@ -77,7 +78,14 @@ function Dashboard({ user, onLogout }) {
             />
             </div>
             
-            {/* 게시물 목록 헤더 (제목 + 글쓰기 버튼) */}
+            <div className="rating-filter-container">
+                <span>별점으로 검색:</span>
+                <StarRatingInput
+                    rating={ratingFilter}
+                    onRatingChange={setRatingFilter}
+                />
+            </div>
+
             <div className="posts-header">
             <h2>My List 📝</h2>
             <Link to="/create" className="btn-create-post">
@@ -85,14 +93,12 @@ function Dashboard({ user, onLogout }) {
             </Link>
             </div>
             
-            {/* 6. 로딩 및 에러 처리 UI */}
             {loading && <p>게시물을 불러오는 중... ⏳</p>}
             {error && <p className="error-message" style={{color: "crimson"}}>{error}</p>}
 
             <div className="posts-grid">
             {!loading && !error && filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
-                // 7. [수정] 링크 경로는 post.number (PostDetail이 number를 ID로 사용)
                 <Link to={`/post/${post.number}`} key={post._id} className="post-card">
                     
                     {post.presignedImageUrl ? (
@@ -118,7 +124,6 @@ function Dashboard({ user, onLogout }) {
                 </Link>
                 ))
             ) : (
-                // 검색 결과가 없거나 데이터가 없을 때
                 !loading && !error && (
                 <p className="no-results">
                     {searchTerm ? `'${searchTerm}'에 대한 검색 결과가 없습니다.` : '아직 작성된 게시물이 없습니다.'}
