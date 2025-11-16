@@ -1,7 +1,7 @@
 .star-rating-input {
     display: flex;
     font-size: 2.5rem;
-    color: var(--color-border); // 비어있는 별 색상
+    color: var(--color-border); // 비어있는 별 색상 
     cursor: pointer;
 
     &.disabled {
