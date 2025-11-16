@@ -4,12 +4,14 @@ import './style/Dashboard.scss';
 import api from '../api/client';
 import StarRatingDisplay from '../components/StarRatingDisplay';
 import StarRatingInput from '../components/StarRatingInput'; 
+// [ 1. PriceRangeDisplay 임포트 제거 ]
 
 function Dashboard({ user, onLogout }) {
     const [posts, setPosts] = useState([]); 
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [ratingFilter, setRatingFilter] = useState(0);
+    const [priceFilter, setPriceFilter] = useState('전체'); // [ 2. 가격대 필터 state 수정 ]
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null); 
 
@@ -43,11 +45,12 @@ function Dashboard({ user, onLogout }) {
         }
     }, [user]); // user가 변경될 때(로그인 시) 다시 실행
 
-    // [수정] 필터링 로직 (작성자 이름 검색 추가)
+    // [수정] 필터링 로직 (가격대 필터 추가)
     useEffect(() => {
         let filtered = posts; 
         const isAdmin = user && user.role === 'admin';
 
+        // 검색어 필터
         if (searchTerm) {
             const lowerCaseSearch = searchTerm.toLowerCase();
             filtered = filtered.filter(post => {
@@ -61,13 +64,19 @@ function Dashboard({ user, onLogout }) {
             });
         }
 
+        // 별점 필터
         if (ratingFilter > 0) {
             filtered = filtered.filter(post => post.rating === ratingFilter);
         }
 
+        // [ 3. 가격대 필터 로직 수정 ]
+        if (priceFilter !== '전체') {
+            filtered = filtered.filter(post => post.priceRange === priceFilter);
+        }
+
         setFilteredPosts(filtered);
         
-    }, [searchTerm, ratingFilter, posts, user]); 
+    }, [searchTerm, ratingFilter, priceFilter, posts, user]); // [ 4. priceFilter 의존성 추가 ]
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -105,13 +114,33 @@ function Dashboard({ user, onLogout }) {
             />
             </div>
             
-            <div className="rating-filter-container">
-                <span>별점으로 검색:</span>
-                <StarRatingInput
-                    rating={ratingFilter}
-                    onRatingChange={setRatingFilter}
-                />
+            {/* [ 5. 필터 영역 컨테이너 추가 ] */}
+            <div className="filter-controls">
+              <div className="rating-filter-container">
+                  <span>별점:</span>
+                  <StarRatingInput
+                      rating={ratingFilter}
+                      onRatingChange={setRatingFilter}
+                  />
+              </div>
+
+              {/* [ 6. 가격대 필터 드롭다운 수정 ] */}
+              <div className="price-filter-container">
+                <label htmlFor="priceFilter">가격대:</label>
+                <select 
+                  id="priceFilter"
+                  className="price-filter-select"
+                  value={priceFilter}
+                  onChange={(e) => setPriceFilter(e.target.value)} // parseInt 제거
+                >
+                  <option value="전체">전체</option>
+                  <option value="가성비">가성비</option>
+                  <option value="보통">보통</option>
+                  <option value="비쌈">비쌈</option>
+                </select>
+              </div>
             </div>
+
 
             <div className="posts-header">
             {/* [수정] 'user?.'로 안전하게 접근 */}
@@ -141,8 +170,13 @@ function Dashboard({ user, onLogout }) {
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
                     
-                    <div style={{ margin: `0.5rem 0`}}>
-                        <StarRatingDisplay rating={post.rating} />
+                    {/* [ 7. PriceRangeDisplay 대체 ] */}
+                    <div className="post-info-row">
+                      <StarRatingDisplay rating={post.rating} />
+                      {/* 가격대 텍스트 태그 표시 */}
+                      {post.priceRange && post.priceRange !== '선택안함' && (
+                        <span className="post-price-range-tag">{post.priceRange}</span>
+                      )}
                     </div>
 
                     {user?.role === 'admin' && (
@@ -161,8 +195,8 @@ function Dashboard({ user, onLogout }) {
             ) : (
                 !loading && !error && (
                 <p className="no-results">
-                    {/* [수정] 'user?.'로 안전하게 접근 */}
-                    {searchTerm || ratingFilter > 0 ? `'${searchTerm}' 검색 결과가 없습니다.` : (user?.role === 'admin' ? '전체 게시물이 없습니다.' : '아직 작성된 게시물이 없습니다.')}
+                    {/* [ 8. no-results 조건 수정 ] */}
+                    {searchTerm || ratingFilter > 0 || priceFilter !== '전체' ? `'${searchTerm}' 검색 결과가 없습니다.` : (user?.role === 'admin' ? '전체 게시물이 없습니다.' : '아직 작성된 게시물이 없습니다.')}
                 </p>
                 )
             )}

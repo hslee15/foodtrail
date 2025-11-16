@@ -72,7 +72,8 @@ async function addPresignedUrls(posts) {
 // POST /api/posts (새 게시물 작성)
 router.post('/', authenticateToken, async (req, res, next) => {
   try {
-    let { title, content, fileUrl = [], imageUrl, rating } = req.body;
+    // --- [ 1. priceRange 추가 ] ---
+    let { title, content, fileUrl = [], imageUrl, rating, priceRange } = req.body;
 
     if (typeof fileUrl === 'string') {
       try {
@@ -91,6 +92,7 @@ router.post('/', authenticateToken, async (req, res, next) => {
       title,
       content,
       rating,
+      priceRange, // [ 1. priceRange 저장 ]
       fileUrl,
       imageUrl,
     });
@@ -155,8 +157,10 @@ router.get('/:id', ensureValidNumber, async (req, res, next) => {
 // PUT /api/posts/:id (게시물 수정)
 router.put('/:id', authenticateToken, ensureValidNumber, async (req, res, next) => {
   try {
-    const { title, content, fileUrl, imageUrl, rating } = req.body;
-    const updates = pickDefined({ title, content, fileUrl, imageUrl, rating });
+    // --- [ 2. priceRange 추가 ] ---
+    const { title, content, fileUrl, imageUrl, rating, priceRange } = req.body;
+    const updates = pickDefined({ title, content, fileUrl, imageUrl, rating, priceRange });
+    // --- [ 2. 여기까지 ] ---
 
     // (생략: 글 작성자 본인 확인 로직이 필요할 수 있습니다)
 
@@ -191,4 +195,3 @@ router.delete('/:id', authenticateToken, ensureValidNumber, async (req, res, nex
 });
 
 module.exports = router;
-
