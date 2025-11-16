@@ -95,13 +95,23 @@ export default function PostCreate() {
 
         {/* 제목 입력 */}
         <div className="form-group">
-          <label htmlFor="title">제목</label>
+          <label htmlFor="title">제목 (식당 이름)</label>
           <input
             id="title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="맛집 이름, 메뉴 등"
+            disabled={loading}
+          />
+        </div>
+
+        {/* [추가] 별점 입력 */}
+        <div className="form-group">
+          <label>별점</label>
+          <StarRatingInput
+            rating={rating}
+            onRatingChange={setRating}
             disabled={loading}
           />
         </div>
@@ -131,15 +141,6 @@ export default function PostCreate() {
           />
         </div>
         
-        {/* [추가] 별점 입력 */}
-        <div className="form-group">
-          <label>별점</label>
-          <StarRatingInput
-            rating={rating}
-            onRatingChange={setRating}
-            disabled={loading}
-          />
-        </div>
 
         {/* 이미지 미리보기 */}
         {preview && (

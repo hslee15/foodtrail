@@ -144,6 +144,16 @@ useEffect(() => {
             />
             </div>
 
+            {/* [추가] 별점 입력 */}
+            <div className="form-group">
+            <label>별점</label>
+            <StarRatingInput
+                rating={rating}
+                onRatingChange={setRating}
+                disabled={loading}
+            />
+            </div>
+
             {/* 내용 */}
             <div className="form-group">
             <label htmlFor="content">내용</label>
@@ -164,16 +174,6 @@ useEffect(() => {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                disabled={loading}
-            />
-            </div>
-
-            {/* [추가] 별점 입력 */}
-            <div className="form-group">
-            <label>별점</label>
-            <StarRatingInput
-                rating={rating}
-                onRatingChange={setRating}
                 disabled={loading}
             />
             </div>
