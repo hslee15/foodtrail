@@ -11,6 +11,7 @@ export default function PostCreate() {
   const [file, setFile] = useState(null); // 업로드할 파일 객체
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
   const [rating, setRating] = useState(0)
+  const [priceRange, setPriceRange] = useState('선택안함');
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -114,6 +115,21 @@ export default function PostCreate() {
             onRatingChange={setRating}
             disabled={loading}
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor='priceRange'>가격대</label>
+          <select
+            id='priceRange'
+            value={priceRange}
+            onChange={(e)=>setPriceRange(e.target.value)}
+            disabled={loading}
+          >
+            <option value="선택안함">선택 안함</option>
+            <option value="가성비">가성비</option>
+            <option value="보통">보통</option>
+            <option value="비쌈">비쌈</option>
+          </select>
         </div>
 
         {/* 내용 입력 */}

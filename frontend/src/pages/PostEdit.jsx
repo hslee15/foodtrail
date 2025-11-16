@@ -16,6 +16,7 @@ export default function PostEdit() {
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
   const [existingImageKey, setExistingImageKey] = useState(null); // 기존 S3 키
   const [rating, setRating] = useState(0)
+  const [priceRange, setPriceRange] = useState('선택안함');
 
   const [loading, setLoading] = useState(true); // 처음엔 데이터 로딩
   const [error, setError] = useState(null);
@@ -32,6 +33,7 @@ useEffect(() => {
             setTitle(post.title);
             setContent(post.content);
             setRating(post.rating || 0);
+            setPriceRange(post.priceRange || '선택안함');
 
             // --- 백엔드 수정 사항 반영 ---
             // 1. 표시용 URL 설정
@@ -105,7 +107,7 @@ useEffect(() => {
             imageUrl: finalFileKey || null,
         };
 
-        await api.put(`/api/posts/${id}`, postData); // 👈 PUT 요청
+        await api.put(`/api/posts/${id}`, postData);
 
         // 4. 성공 시 상세 페이지로 이동
         navigate(`/post/${id}`);
@@ -152,6 +154,21 @@ useEffect(() => {
                 onRatingChange={setRating}
                 disabled={loading}
             />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="priceRange">가격대</label>
+                <select 
+                    id="priceRange"
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(e.target.value)}
+                    disabled={loading}
+                >
+                    <option value="선택안함">선택 안 함</option>
+                    <option value="가성비">가성비</option>
+                    <option value="보통">보통</option>
+                    <option value="비쌈">비쌈</option>
+                </select>
             </div>
 
             {/* 내용 */}

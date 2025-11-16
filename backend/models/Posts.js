@@ -35,16 +35,18 @@ const postSchema = new mongoose.Schema(
             min: 0,
             max: 5,
             default: 0,
+        },
+        priceRange:{
+            type:String,
+            enum: ['선택안함', '가성비', '보통', '비쌈'],
+            default: '선택안함',
         }
     },
     {
-        timestamps: true, // createdAt, updatedAt 자동 생성
+        timestamps: true,
     }
 );
 
-// 고유 번호 (number)에 대한 인덱스 (내림차순)
 postSchema.index({ number: -1 });
 
-// 💡 참고: 모델 이름은 'Post' (단수)로 유지하는 것이 Mongoose 관례입니다.
-// 파일명(Posts.js)과 모델명(Post)이 달라도 괜찮습니다.
 module.exports = mongoose.model('Post', postSchema);
