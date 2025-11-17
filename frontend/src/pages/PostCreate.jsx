@@ -11,6 +11,7 @@ export default function PostCreate() {
   const [file, setFile] = useState(null); // 업로드할 파일 객체
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
   const [rating, setRating] = useState(0)
+  const [priceRange, setPriceRange] = useState('선택안함');
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,6 +71,7 @@ export default function PostCreate() {
         title,
         content,
         rating,
+        priceRange,
         // S3 키가 있으면 fileUrl과 imageUrl에 넣어줍니다.
         fileUrl: uploadedFileKey ? [uploadedFileKey] : [],
         imageUrl: uploadedFileKey || null,
@@ -95,7 +97,7 @@ export default function PostCreate() {
 
         {/* 제목 입력 */}
         <div className="form-group">
-          <label htmlFor="title">제목</label>
+          <label htmlFor="title">제목 (식당 이름)</label>
           <input
             id="title"
             type="text"
@@ -104,6 +106,31 @@ export default function PostCreate() {
             placeholder="맛집 이름, 메뉴 등"
             disabled={loading}
           />
+        </div>
+
+        {/* [추가] 별점 입력 */}
+        <div className="form-group">
+          <label>별점</label>
+          <StarRatingInput
+            rating={rating}
+            onRatingChange={setRating}
+            disabled={loading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor='priceRange'>가격대</label>
+          <select
+            id='priceRange'
+            value={priceRange}
+            onChange={(e)=>setPriceRange(e.target.value)}
+            disabled={loading}
+          >
+            <option value="선택안함">선택 안함</option>
+            <option value="가성비">가성비</option>
+            <option value="보통">보통</option>
+            <option value="비쌈">비쌈</option>
+          </select>
         </div>
 
         {/* 내용 입력 */}
@@ -131,15 +158,6 @@ export default function PostCreate() {
           />
         </div>
         
-        {/* [추가] 별점 입력 */}
-        <div className="form-group">
-          <label>별점</label>
-          <StarRatingInput
-            rating={rating}
-            onRatingChange={setRating}
-            disabled={loading}
-          />
-        </div>
 
         {/* 이미지 미리보기 */}
         {preview && (

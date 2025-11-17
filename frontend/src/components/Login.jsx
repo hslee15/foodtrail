@@ -22,35 +22,38 @@ function Login({ onSuccess }) {
 };
 
     return (
-        <form className="auth-form" onSubmit={submit}>
-            <div className="auth-header">
-                <h2>로그인</h2>
-            </div>
-            <div className="auth-inputs">
-                <input
-                    type="email"
-                    placeholder="이메일"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="비밀번호"
-                    value={pw}
-                    onChange={(e) => setPw(e.target.value)}
-                />
-            </div>
-            <div className="button">
-                <button type="submit">로그인</button>
-                <button type="button" onClick={() => navigate("/register")}>회원가입</button>
-            </div>
-            
-            {err && (
-                <div className="auth-error">
-                    <p className="error">{err}</p>
+        // [추가] 1. 반응형 정렬을 위한 래퍼 div
+        <div className="auth-page-container">
+            <form className="auth-form" onSubmit={submit}>
+                <div className="auth-header">
+                    <h2>로그인</h2>
                 </div>
-            )}
-        </form>
+                <div className="auth-inputs">
+                    <input
+                        type="email"
+                        placeholder="이메일"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="비밀번호"
+                        value={pw}
+                        onChange={(e) => setPw(e.target.value)}
+                    />
+                </div>
+                <div className="button">
+                    <button type="submit">로그인</button>
+                    <button type="button" onClick={() => navigate("/register")}>회원가입</button>
+                </div>
+                
+                {err && (
+                    <div className="auth-error">
+                        <p className="error">{err}</p>
+                    </div>
+                )}
+            </form>
+        </div> // [추가] 래퍼 div 닫기
     );
 }
 

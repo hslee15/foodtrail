@@ -1,47 +1,134 @@
-@use "sass:color";
-/* --- FoodTrail Green Theme --- */
-$color-bg: #F9FBF6;
-$color-text: #3E4C3A;
-$color-main: #8dbb3c;
-$color-accent: #4da24c;
-$color-accent-text: #FFFFFF;
-$color-header-text: #FFFFFF;
-/* ----------------------------- */
-
 .landing-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    height: 100vh; 
+    width: 100vw;
     text-align: center;
-    color: $color-text;
+    color: var(--color-header-text);
+    background-size: cover;
+    background-position: center;
+    background-color: var(--color-main);
+    transition: background-image 1.5s ease-in-out;
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden; 
+    }
+
+    .landing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+    background-color: var(--color-bg);
+    }
+
+    .landing-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1.5s ease-out;
+    }
+
 
     .landing-header {
-        h1 {
-        font-size: 3.5rem;
-        color: $color-main; // 🟢 내추럴 그린
+    h1 {
+        font-size: 4.5rem;
+        color: var(--color-main);
         margin-bottom: 0.5rem;
-        }
-        p {
-        font-size: 1.2rem;
-        color: $color-text;
-        }
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    p {
+        font-size: 1.4rem;
+        color: var(--color-header-text);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
     }
 
     .landing-main {
-        margin-top: 2.5rem;
+    margin-top: 2.5rem;
     }
 
     .start-button {
-        background-color: $color-accent; // 🌲 포레스트 그린
-        color: $color-accent-text;
-        font-size: 1.2rem;
-        padding: 0.8em 1.5em;
-        
-        &:hover {
-        background-color: color.scale($color-accent, $lightness: -5%);
-        border-color: $color-accent;
-        }
+    background-color: var(--color-accent); // [수정] CSS 변수 사용
+    color: var(--color-accent-text); // [수정] CSS 변수 사용
+    font-size: 1.4rem;
+    padding: 0.8em 2em;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: var(--color-accent-hover); // [수정] CSS 변수 사용
+        border-color: var(--color-accent-hover); // [수정] CSS 변수 사용
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    }
+
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    }
+
+    @keyframes riseAndFade {
+    0% {
+        opacity: 0;
+        transform: translateY(80px);
+    }
+    20% {
+        opacity: 0.9;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 0.9;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    }
+
+    .animated-previews {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    width: 100%;
+    }
+
+    .preview-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    animation: riseAndFade 5s infinite ease-in-out;
+
+    &:nth-child(1) {
+        animation-delay: 0s;
+    }
+    &:nth-child(2) {
+        animation-delay: 1.5s;
+    }
+    &:nth-child(3) {
+        animation-delay: 3s;
     }
 }

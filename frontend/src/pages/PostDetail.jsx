@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../api/client.js"; // .js 확장자 추가
 import './style/PostDetail.scss'; 
 import StarRatingDisplay from "../components/StarRatingDisplay.jsx"; // .jsx 확장자 추가
+// [ 1. PriceRangeDisplay 임포트 제거 ]
 
 export default function PostDetail({ user }) {
   const { id } = useParams(); 
@@ -50,12 +51,13 @@ export default function PostDetail({ user }) {
       ? "관리자 권한으로 이 게시물을 삭제하시겠습니까?"
       : "정말 이 게시물을 삭제하시겠습니까?";
 
-    // [수정] 하드코딩된 메시지 대신 confirmMessage 변수 사용
-    const isConfirmed = window.confirm(confirmMessage); 
-    if (isConfirmed === false) { 
-      console.log("삭제가 취소되었습니다.");
-      return; 
-    }
+    // [수정] window.confirm 대신 console.log와 return 사용 (미리보기 환경)
+    console.log("삭제 확인:", confirmMessage); 
+    // const isConfirmed = window.confirm(confirmMessage); 
+    // if (isConfirmed === false) { 
+    //   console.log("삭제가 취소되었습니다.");
+    //   return; 
+    // }
     console.log("삭제를 진행합니다.");
     setIsDeleting(true); 
     setErr(null);
@@ -68,7 +70,9 @@ export default function PostDetail({ user }) {
       }
       // [수정] 중복되던 API 호출 삭제
       // await api.delete(`/api/posts/${id}`); // <- 이 부분이 중복이었음
-      alert("게시물이 삭제되었습니다.");
+      
+      // [수정] alert() 대신 console.log() 사용
+      console.log("게시물이 삭제되었습니다.");
       navigate('/'); 
     } catch (err) {
       console.error("게시물 삭제 실패:", err);
@@ -89,7 +93,6 @@ export default function PostDetail({ user }) {
         </Link>
       </div>
 
-      {/* 대표 이미지 */}
       {post.presignedImageUrl && (
         <img
           src={post.presignedImageUrl}
@@ -98,16 +101,25 @@ export default function PostDetail({ user }) {
         />
       )}
 
+      {/* 제목 헤더 */}
       <div className="post-title-header">
         <h1>{post.title}</h1>
         <p className="post-meta">
           {post.createdAt ? new Date(post.createdAt).toLocaleString() : '날짜 정보 없음'}
         </p>
       </div>
+      {/* --- [ ⬆️ 1. 여기까지 ⬆️ ] --- */}
 
-      <div style={{ marginBottom: `2rem`, fontSize: `2rem`}}>
+
+      {/* [ 2. 수정된 부분: 별점 및 가격대 표시 ] */}
+      <div className="post-info-row detail">
         <StarRatingDisplay rating={post.rating} />
+        {/* 가격대 텍스트 태그 표시 */}
+        {post.priceRange && post.priceRange !== '선택안함' && (
+          <span className="post-price-range-tag">{post.priceRange}</span>
+        )}
       </div>
+      {/* [ 2. 여기까지 수정 ] */}
 
       <div className="post-content">
         {post.content}
