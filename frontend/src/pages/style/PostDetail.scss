@@ -1,5 +1,21 @@
 // frontend/src/pages/style/PostDetail.scss
 
+.post-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; 
+  margin-bottom: 2rem; /* 본문 내용과의 여백 */
+
+  /* 상세 페이지 태그 스타일 */
+  .post-price-range-tag {
+    background-color: var(--color-main-shadow);
+    color: var(--color-main);
+    font-weight: 500;
+    padding: 0.3em 0.7em;
+    border-radius: 6px;
+    font-size: 1rem; 
+  }
+}
 .post-detail-container {
   // --- 1. 기본 카드 레이아웃 ---
   max-width: 768px;

@@ -71,6 +71,7 @@ export default function PostCreate() {
         title,
         content,
         rating,
+        priceRange,
         // S3 키가 있으면 fileUrl과 imageUrl에 넣어줍니다.
         fileUrl: uploadedFileKey ? [uploadedFileKey] : [],
         imageUrl: uploadedFileKey || null,

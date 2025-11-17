@@ -103,6 +103,7 @@ useEffect(() => {
             title,
             content,
             rating,
+            priceRange,
             fileUrl: finalFileKey ? [finalFileKey] : [],
             imageUrl: finalFileKey || null,
         };
