@@ -5,6 +5,12 @@ import './style/PostDetail.scss';
 import StarRatingDisplay from "../components/StarRatingDisplay.jsx"; // .jsx 확장자 추가
 // [ 1. PriceRangeDisplay 임포트 제거 ]
 
+const priceRangeClasses = {
+    '비쌈': 'price-bad',   
+    '보통': 'price-soso',    
+    '가성비': 'price-great',  
+};
+
 export default function PostDetail({ user }) {
   const { id } = useParams(); 
   const [post, setPost] = useState(null);
@@ -116,7 +122,9 @@ export default function PostDetail({ user }) {
         <StarRatingDisplay rating={post.rating} />
         {/* 가격대 텍스트 태그 표시 */}
         {post.priceRange && post.priceRange !== '선택안함' && (
-          <span className="post-price-range-tag">{post.priceRange}</span>
+          <span className={`post-price-range-tag ${priceRangeClasses[post.priceRange] || ''}`}>
+            {post.priceRange}
+          </span>
         )}
       </div>
       {/* [ 2. 여기까지 수정 ] */}
