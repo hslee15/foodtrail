@@ -115,6 +115,7 @@ function Dashboard({ user, onLogout }) {
                         onRatingChange={setRatingFilter}
                     />
                 </div>
+            </div>
 
             <div className="price-filter-container">
                 <label htmlFor="priceFilter">가격대:</label>
@@ -129,15 +130,21 @@ function Dashboard({ user, onLogout }) {
                     <option value="보통">보통</option>
                     <option value="비쌈">비쌈</option>
                 </select>
-                </div>
             </div>
 
 
             <div className="posts-header">
             <h2>{user?.role === 'admin' ? '전체 게시물 👩‍💻' : 'My List 📝'}</h2>
-            <Link to="/create" className="btn-create-post">
-                새 글 작성하기 ＋
-            </Link>
+            <div className="header-actions">
+                {user?.role === 'admin' && (
+                    <Link to="/users" className="btn-manage-users">
+                        사용자 관리 👥
+                    </Link>
+                )}
+                <Link to="/create" className="btn-create-post">
+                    새 글 작성하기 ＋
+                </Link>
+            </div>
             </div>
             
             {loading && <p>게시물을 불러오는 중... ⏳</p>}
@@ -160,7 +167,7 @@ function Dashboard({ user, onLogout }) {
                     <div className="post-content">
                     <h3 className="post-title">{post.title}</h3>
                     
-                    <div className="post-info-row">
+                    <div className={`post-info-row ${user?.role === 'admin' ? 'admin-layout' : 'user-layout'}`}>
                         <StarRatingDisplay rating={post.rating} />
                         {post.priceRange && post.priceRange !== '선택안함' && (
                             <span className={`post-price-range-tag ${priceRangeClasses[post.priceRange] || ''}`}>

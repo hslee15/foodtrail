@@ -50,13 +50,41 @@ router.get('/posts', async (req, res) => {
 
 router.get('/users', async (req, res) => {
     try {
-        const users = await User.find().select('-passwordHash');
+        const users = await User.find().select('-passwordHash').sort({ createdAt: -1 });
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: '유저 조회 실패', error });
     }
 });
 
+router.patch('/users/:id/active', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isActive } = req.body;
+
+        if (typeof isActive !== 'boolean') {
+            return res.status(400).json({ message: 'isActive는 boolean 값이어야 합니다.' });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            { isActive },
+            { new: true }
+        ).select('-passwordHash');
+
+        if (!user) {
+            return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+        }
+
+        res.json({ 
+            ok: true, 
+            message: `사용자가 ${isActive ? '활성화' : '비활성화'}되었습니다.`,
+            user 
+        });
+    } catch (error) {
+        res.status(500).json({ message: '사용자 상태 변경 실패', error: error.message });
+    }
+});
 
 router.delete('/posts/:id', async (req, res, next) => {
     try {
